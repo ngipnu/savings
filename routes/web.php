@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Auth\Login;
 use App\Livewire\Student\Dashboard as StudentDashboard;
+use App\Livewire\Student\Profile as StudentProfile;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\ClassManagement;
 use App\Livewire\Admin\StudentManagement;
@@ -23,6 +24,7 @@ Route::get('/login', Login::class)->name('login');
 Route::middleware(['auth'])->group(function () {
     // Student Routes
     Route::get('/student/dashboard', StudentDashboard::class)->name('student.dashboard');
+    Route::get('/student/profile', StudentProfile::class)->name('student.profile');
     
     // Admin Routes
     Route::prefix('admin')->name('admin.')->group(function () {
