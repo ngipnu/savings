@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ $title ?? 'Admin Panel' }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('logo_round.png') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        coinest: {
+                            base: '#1e3a29', // Dark green text/bg
+                            light: '#eefac4', // Light lime bg
+                            accent: '#bef264', // Bright lime accent
+                            gray: '#f9fafb', // Background
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    @livewireStyles
+</head>
+<body class="bg-[#f8fafc] text-slate-800 font-sans antialiased">
+    
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 bg-white border-r border-slate-200 flex-shrink-0 flex-col fixed h-full z-30 hidden md:flex">
+            <div class="p-8 flex items-center gap-3">
+                <img src="{{ asset('logo_round.png') }}" alt="Logo" class="w-10 h-10 rounded-lg object-cover">
+                <h1 class="text-xl font-bold tracking-tight text-[#1e3a29]">SavNest</h1>
+            </div>
+
+            <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+                @php
+                    $userRole = Auth::user()->role;
+                @endphp
+
+                {{-- Dashboard - All roles --}}
+                <a href="{{ $userRole === 'operator' ? route('operator.dashboard') : ($userRole === 'wali_kelas' ? route('wali-kelas.dashboard') : route('admin.dashboard')) }}" 
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm group
+                   {{ request()->routeIs('admin.dashboard') || request()->routeIs('operator.dashboard') || request()->routeIs('wali-kelas.dashboard') ? 'bg-lime-400 text-[#1e3a29] shadow-sm' : 'text-slate-500 hover:bg-slate-50 hover:text-[#1e3a29]' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.dashboard') || request()->routeIs('operator.dashboard') || request()->routeIs('wali-kelas.dashboard') ? 'text-[#1e3a29]' : 'text-slate-400 group-hover:text-[#1e3a29]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                    </svg>
+                    Dashboard
+                </a>
+
+                @if(in_array($userRole, ['super_admin', 'admin', 'wali_kelas']))
+                {{-- Manajemen Siswa - Super Admin, Admin, Wali Kelas --}}
+                <a href="{{ route('admin.students') }}" 
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm group {{ request()->routeIs('admin.students') ? 'bg-lime-400 text-[#1e3a29] shadow-sm' : 'text-slate-500 hover:bg-slate-50 hover:text-[#1e3a29]' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->routeIs('admin.students') ? 'text-[#1e3a29]' : 'text-slate-400 group-hover:text-[#1e3a29]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                    </svg>
+                    Manajemen Siswa
+                </a>
+                @endif
+
+                @if(in_array($userRole, ['super_admin', 'admin']))
+                {{-- Manajemen Kelas - Super Admin, Admin only --}}
+                 <a href="{{ route('admin.classes') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm group {{ request()->routeIs('admin.classes') ? 'bg-lime-400 text-[#1e3a29] shadow-sm' : 'text-slate-500 hover:bg-slate-50 hover:text-[#1e3a29]' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->routeIs('admin.classes') ? 'text-[#1e3a29]' : 'text-slate-400 group-hover:text-[#1e3a29]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
+                    </svg>
+                    Manajemen Kelas
+                </a>
+
+                {{-- Akun Pengelola - Super Admin, Admin only --}}
+                 <a href="{{ route('admin.managers') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm group {{ request()->routeIs('admin.managers') ? 'bg-lime-400 text-[#1e3a29] shadow-sm' : 'text-slate-500 hover:bg-slate-50 hover:text-[#1e3a29]' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->routeIs('admin.managers') ? 'text-[#1e3a29]' : 'text-slate-400 group-hover:text-[#1e3a29]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                    </svg>
+                    Akun Pengelola
+                </a>
+                @endif
+
+                @if(in_array($userRole, ['super_admin', 'admin', 'operator']))
+                {{-- Manajemen Transaksi - Super Admin, Admin, Operator --}}
+                <a href="{{ route('admin.transactions') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm group {{ request()->routeIs('admin.transactions') ? 'bg-lime-400 text-[#1e3a29] shadow-sm' : 'text-slate-500 hover:bg-slate-50 hover:text-[#1e3a29]' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->routeIs('admin.transactions') ? 'text-[#1e3a29]' : 'text-slate-400 group-hover:text-[#1e3a29]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                    </svg>
+                    Manajemen Transaksi
+                </a>
+                @endif
+                
+                @if(in_array($userRole, ['super_admin', 'admin']))
+                {{-- Manajemen Produk - Super Admin, Admin only --}}
+                <a href="{{ route('admin.products') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm group {{ request()->routeIs('admin.products') ? 'bg-lime-400 text-[#1e3a29] shadow-sm' : 'text-slate-500 hover:bg-slate-50 hover:text-[#1e3a29]' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->routeIs('admin.products') ? 'text-[#1e3a29]' : 'text-slate-400 group-hover:text-[#1e3a29]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+                    </svg>
+                    Manajemen Produk
+                </a>
+
+                {{-- Tahun Akademik - Super Admin, Admin only --}}
+                <a href="{{ route('admin.academic-years') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm group {{ request()->routeIs('admin.academic-years') ? 'bg-lime-400 text-[#1e3a29] shadow-sm' : 'text-slate-500 hover:bg-slate-50 hover:text-[#1e3a29]' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->routeIs('admin.academic-years') ? 'text-[#1e3a29]' : 'text-slate-400 group-hover:text-[#1e3a29]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                    </svg>
+                    Tahun Akademik
+                </a>
+
+                {{-- Laporan - Super Admin, Admin only --}}
+                <a href="{{ route('admin.reports') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm group {{ request()->routeIs('admin.reports') ? 'bg-lime-400 text-[#1e3a29] shadow-sm' : 'text-slate-500 hover:bg-slate-50 hover:text-[#1e3a29]' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->routeIs('admin.reports') ? 'text-[#1e3a29]' : 'text-slate-400 group-hover:text-[#1e3a29]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                    </svg>
+                    Laporan
+                </a>
+                @endif
+            </nav>
+
+            <div class="p-4 border-t border-slate-100">
+                <button wire:click="logout" class="flex items-center gap-3 px-4 py-3 w-full rounded-xl transition-all font-medium text-sm text-red-500 hover:bg-red-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                    </svg>
+                    Log Out
+                </button>
+            </div>
+        </aside>
+
+        <!-- Mobile Header -->
+        <header class="md:hidden bg-white border-b border-slate-200 p-4 sticky top-0 z-40 flex justify-between items-center">
+            <h1 class="text-lg font-bold text-[#1e3a29]">SavNest</h1>
+            <button class="p-2 bg-slate-100 rounded-lg text-slate-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </header>
+
+        <!-- Main Content (Shifted for sidebar) -->
+        <main class="flex-1 md:ml-64 p-6 md:p-8 w-full max-w-[1600px] mx-auto">
+            {{ $slot }}
+        </main>
+    </div>
+
+    @livewireScripts
+</body>
+</html>
