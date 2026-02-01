@@ -41,22 +41,24 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-lime-50 min-h-screen relative overflow-x-hidden text-slate-800">
+<body class="bg-white text-slate-800">
 
-    <!-- Decorative Shapes -->
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-lime-100 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
-    <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-amber-200 rounded-full blur-3xl opacity-20 translate-y-1/2 -translate-x-1/2"></div>
+    <!-- Hero Section with Background -->
+    <div class="relative overflow-hidden bg-gradient-to-br from-slate-50 to-lime-100">
+        <!-- Decorative Shapes -->
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-lime-400 rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#1e3a29] rounded-full blur-3xl opacity-10 translate-y-1/2 -translate-x-1/2"></div>
 
     <!-- Navbar -->
     <nav class="relative z-10 container mx-auto px-6 py-6 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <div class="w-10 h-10 bg-#1e3a29 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">T</div>
-            <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-#1e3a29 to-#1e3a29">TabunganSiswa</span>
+        <div class="flex items-center gap-3">
+            <img src="{{ asset('logo_round.png') }}" alt="TASIA Logo" class="w-12 h-12 rounded-xl shadow-lg object-cover">
+            <span class="text-2xl font-bold text-[#1e3a29]">Tabungan Siswa An Nadzir</span>
         </div>
         <div class="hidden md:flex gap-8 font-medium text-slate-600">
-            <a href="#features" class="hover:text-#1e3a29 transition">Fitur</a>
-            <a href="#about" class="hover:text-#1e3a29 transition">Tentang</a>
-            <a href="#contact" class="hover:text-#1e3a29 transition">Kontak</a>
+            <a href="#features" class="hover:text-[#1e3a29] transition">Fitur</a>
+            <a href="#about" class="hover:text-[#1e3a29] transition">Tentang</a>
+            <a href="#contact" class="hover:text-[#1e3a29] transition">Kontak</a>
         </div>
     </nav>
 
@@ -64,19 +66,19 @@
     <main class="relative z-10 container mx-auto px-6 pt-10 pb-20 flex flex-col lg:flex-row items-center gap-16">
         <!-- Text Content -->
         <div class="flex-1 text-center lg:text-left">
-            <div class="inline-block px-4 py-1.5 bg-white border border-lime-50 rounded-full text-#1e3a29 font-semibold text-sm mb-6 shadow-sm">
+            <div class="inline-block px-4 py-1.5 bg-lime-400/20 border border-lime-400 rounded-full text-[#1e3a29] font-semibold text-sm mb-6 shadow-sm">
                 👋 Selamat Datang di Platform Tabungan Sekolah
             </div>
             <h1 class="text-5xl lg:text-7xl font-bold leading-tight mb-6 text-slate-900">
                 Kelola Tabungan <br>
-                <span class="text-#1e3a29">Lebih Mudah</span> & Aman
+                <span class="text-[#1e3a29]">Lebih Mudah</span> & Aman
             </h1>
             <p class="text-lg text-slate-600 mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                 TASIA (Tabungan Siswa An Nadzir) - Aplikasi pencatatan tabungan siswa yang transparan, modern, dan mudah diakses. Pantau saldo dan riwayat transaksi kapan saja, di mana saja.
             </p>
             
             <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <a href="/login" class="group relative px-8 py-4 bg-#1e3a29 text-white font-semibold rounded-2xl shadow-lime-100 shadow-xl hover:shadow-2xl hover:bg-#2a4d38 transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden w-full sm:w-auto">
+                <a href="/login" class="group relative px-8 py-4 bg-[#1e3a29] text-white font-semibold rounded-2xl shadow-lime-400/30 shadow-xl hover:shadow-2xl hover:bg-[#2a4d38] transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden w-full sm:w-auto">
                     <span class="relative z-10">Login Akun</span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
@@ -112,7 +114,7 @@
                             <div class="text-xs text-slate-400 font-medium uppercase tracking-wider">Total Tabungan</div>
                             <div class="text-3xl font-bold text-slate-800">Rp 2.500.000</div>
                         </div>
-                        <div class="w-12 h-12 bg-lime-50 rounded-full flex items-center justify-center text-#1e3a29">
+                        <div class="w-12 h-12 bg-lime-50 rounded-full flex items-center justify-center text-[#1e3a29]">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path d="M10.464 8.746c.227-.18.497-.311.786-.394v2.795a2.252 2.252 0 01-.786-.393c-.394-.313-.546-.681-.546-1.004 0-.314.164-.623.546-1.003zm3.072 6.502c-.394.314-.546.681-.546 1.004 0 .324.164.633.546 1.004.227.18.497.311.786.394v-2.795a2.252 2.252 0 01-.786.393zm1.603-4.527c.501.378.892.68 1.171 1.026.279.346.419.743.419 1.192 0 .61-.242 1.127-.726 1.55-.484.423-1.126.697-1.927.822v1.393h-1.5v-1.316a5.54 5.54 0 01-1.25-.19c-.439-.12-.865-.333-1.28-.638l.68-1.272c.307.27.64.475.999.614.359.139.697.209 1.015.209.439 0 .805-.102 1.1-.304.294-.202.441-.497.441-.883 0-.398-.168-.748-.504-1.05-.336-.303-.767-.547-1.291-.734-.524-.186-1.007-.404-1.449-.652-.442-.249-.785-.572-1.029-.97-.245-.397-.367-.883-.367-1.457 0-.61.242-1.127.726-1.55.485-.423 1.127-.697 1.927-.822V4.5h1.5v1.316c.404.05.815.14 1.233.27.418.13.843.332 1.276.603l-.683 1.275c-.389-.258-.78-.445-1.173-.562-.393-.117-.751-.176-1.074-.176-.43 0-.796.102-1.099.305-.303.203-.454.498-.454.883 0 .389.168.73.504 1.027.336.297.777.537 1.32.72.544.182 1.042.404 1.494.666.452.261.799.59 1.04.987.241.397.362.884.362 1.46z" />
                             </svg>
@@ -133,7 +135,7 @@
                                     <div class="text-xs text-slate-500">Senin, 12 Feb</div>
                                 </div>
                             </div>
-                            <span class="text-sm font-bold text-#1e3a29">+ Rp 50.000</span>
+                            <span class="text-sm font-bold text-[#1e3a29]">+ Rp 50.000</span>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
                             <div class="flex items-center gap-3">
@@ -147,7 +149,7 @@
                                     <div class="text-xs text-slate-500">Kamis, 08 Feb</div>
                                 </div>
                             </div>
-                            <span class="text-sm font-bold text-#1e3a29">+ Rp 20.000</span>
+                            <span class="text-sm font-bold text-[#1e3a29]">+ Rp 20.000</span>
                         </div>
                          <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl opacity-60">
                             <div class="flex items-center gap-3">
@@ -173,6 +175,7 @@
             </div>
         </div>
     </main>
+    </div><!-- End Hero Section with Background -->
 
     <!-- Features -->
     <section id="features" class="bg-white py-20">
@@ -181,7 +184,7 @@
             
             <div class="grid md:grid-cols-3 gap-10">
                 <div class="p-8 rounded-3xl bg-slate-50 hover:bg-lime-50 transition duration-300 border border-slate-100 hover:border-lime-50">
-                    <div class="w-14 h-14 bg-lime-50 rounded-2xl flex items-center justify-center text-#1e3a29 mb-6">
+                    <div class="w-14 h-14 bg-lime-50 rounded-2xl flex items-center justify-center text-[#1e3a29] mb-6">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
                         </svg>
@@ -213,9 +216,119 @@
         </div>
     </section>
 
-    <footer class="bg-slate-900 text-white py-8 border-t border-slate-800">
-        <div class="container mx-auto px-6 text-center text-slate-400 text-sm">
-            &copy; 2026 TabunganSiswa. All rights reserved.
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-8 text-slate-800">Tentang TASIA</h2>
+            <div class="max-w-3xl mx-auto text-center">
+                <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+                    TASIA (Tabungan Siswa An Nadzir) adalah aplikasi manajemen tabungan siswa yang dikembangkan khusus untuk An Nadzir Islamic School. 
+                    Sistem ini dirancang untuk memudahkan pengelolaan keuangan siswa dengan transparansi penuh dan akses real-time.
+                </p>
+                <p class="text-slate-600 leading-relaxed">
+                    Dengan TASIA, orang tua dapat memantau tabungan anak mereka kapan saja, sementara pihak sekolah dapat mengelola 
+                    ratusan transaksi dengan efisien dan akurat.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12 text-slate-800">Hubungi Kami</h2>
+            <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold mb-4 text-[#1e3a29]">An Nadzir Islamic School</h3>
+                    <div class="space-y-4 text-slate-600">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-lime-500 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <div>
+                                <p class="font-medium text-slate-800">Alamat</p>
+                                <p class="text-sm">Bendungan Karet Cisirih, Kp. Kamasan RT. 009/002<br>Desa Kamasan Kec. Cinangka, Serang-Banten</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-lime-500 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            <div>
+                                <p class="font-medium text-slate-800">Telepon / WhatsApp</p>
+                                <p class="text-sm">+62 851-6125-2008 (Humas)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-lime-500 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                            </svg>
+                            <div>
+                                <p class="font-medium text-slate-800">Website</p>
+                                <a href="https://annadzir.sch.id" target="_blank" class="text-sm text-[#1e3a29] hover:underline">annadzir.sch.id</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold mb-4 text-[#1e3a29]">Visi An Nadzir</h3>
+                    <p class="text-slate-600 italic mb-6">"Sholeh, Muslih, Intellectual Curiosity, Leadership, Environmentally"</p>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 bg-lime-500 rounded-full"></div>
+                            <span class="text-sm text-slate-600">Sholeh - Berakhlak mulia</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 bg-lime-500 rounded-full"></div>
+                            <span class="text-sm text-slate-600">Muslih - Bermanfaat bagi sesama</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 bg-lime-500 rounded-full"></div>
+                            <span class="text-sm text-slate-600">Intellectual Curiosity - Cinta ilmu</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 bg-lime-500 rounded-full"></div>
+                            <span class="text-sm text-slate-600">Leadership - Jiwa kepemimpinan</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 bg-lime-500 rounded-full"></div>
+                            <span class="text-sm text-slate-600">Environmentally - Peduli lingkungan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-[#1e3a29] text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="{{ asset('logo_round.png') }}" alt="TASIA Logo" class="w-10 h-10 rounded-lg">
+                        <span class="text-xl font-bold">TASIA</span>
+                    </div>
+                    <p class="text-lime-100 text-sm">Tabungan Siswa An Nadzir - Sistem manajemen tabungan siswa yang transparan dan modern.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Menu</h4>
+                    <ul class="space-y-2 text-lime-100 text-sm">
+                        <li><a href="#features" class="hover:text-lime-400 transition">Fitur</a></li>
+                        <li><a href="#about" class="hover:text-lime-400 transition">Tentang</a></li>
+                        <li><a href="#contact" class="hover:text-lime-400 transition">Kontak</a></li>
+                        <li><a href="/login" class="hover:text-lime-400 transition">Login</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">An Nadzir Islamic School</h4>
+                    <p class="text-lime-100 text-sm mb-2">Desa Kamasan, Kec. Cinangka<br>Serang, Banten</p>
+                    <p class="text-lime-100 text-sm">+62 851-6125-2008</p>
+                </div>
+            </div>
+            <div class="border-t border-lime-900/30 pt-6 text-center text-lime-100 text-sm">
+                &copy; 2026 TASIA - An Nadzir Islamic School. All rights reserved.
+            </div>
         </div>
     </footer>
 
