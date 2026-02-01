@@ -30,7 +30,6 @@
     <style>
         [x-cloak] { display: none !important; }
     </style>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
 <body class="bg-[#f8fafc] text-slate-800 font-sans antialiased" x-data="{ mobileMenuOpen: false }">
