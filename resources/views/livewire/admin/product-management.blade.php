@@ -46,7 +46,7 @@
                             {{ $product->description ?? '-' }}
                         </td>
                         <td class="px-6 py-4">
-                            <span class="font-bold text-slate-800">Rp {{ number_format($product->min_amount, 0, ',', '.') }}</span>
+                            <span class="font-bold text-slate-800">Rp {{ number_format($product->minimum_deposit, 0, ',', '.') }}</span>
                         </td>
                         <td class="px-6 py-4">
                             <span class="px-3 py-1 bg-lime-100 text-[#1e3a29] rounded-lg text-sm font-bold">
@@ -103,8 +103,8 @@
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-2">Minimal Setoran (Rp)</label>
-                    <input wire:model="min_amount" type="number" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none" placeholder="50000">
-                    @error('min_amount') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                    <input wire:model="minimum_deposit" type="number" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none" placeholder="50000">
+                    @error('minimum_deposit') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="flex gap-3 pt-4">

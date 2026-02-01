@@ -15,13 +15,13 @@ class ProductManagement extends Component
     public $productId;
     public $name;
     public $description;
-    public $min_amount;
+    public $minimum_deposit;
     public $search = '';
 
     protected $rules = [
         'name' => 'required|string|max:255',
         'description' => 'nullable|string',
-        'min_amount' => 'required|numeric|min:0',
+        'minimum_deposit' => 'required|numeric|min:0',
     ];
 
     public function render()
@@ -55,7 +55,7 @@ class ProductManagement extends Component
         $this->productId = null;
         $this->name = '';
         $this->description = '';
-        $this->min_amount = '';
+        $this->minimum_deposit = '';
         $this->resetErrorBag();
     }
 
@@ -68,14 +68,14 @@ class ProductManagement extends Component
             $product->update([
                 'name' => $this->name,
                 'description' => $this->description,
-                'min_amount' => $this->min_amount,
+                'minimum_deposit' => $this->minimum_deposit,
             ]);
             session()->flash('message', 'Produk tabungan berhasil diperbarui!');
         } else {
             SavingType::create([
                 'name' => $this->name,
                 'description' => $this->description,
-                'min_amount' => $this->min_amount,
+                'minimum_deposit' => $this->minimum_deposit,
             ]);
             session()->flash('message', 'Produk tabungan berhasil ditambahkan!');
         }
@@ -90,7 +90,7 @@ class ProductManagement extends Component
         $this->productId = $product->id;
         $this->name = $product->name;
         $this->description = $product->description;
-        $this->min_amount = $product->min_amount;
+        $this->minimum_deposit = $product->minimum_deposit;
         $this->showModal = true;
     }
 

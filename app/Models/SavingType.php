@@ -12,7 +12,7 @@ class SavingType extends Model
     protected $fillable = [
         'name',
         'description',
-        'min_amount',
+        'minimum_deposit',
     ];
 
     public function transactions()
