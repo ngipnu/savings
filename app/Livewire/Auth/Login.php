@@ -9,50 +9,42 @@ use Livewire\Component;
 
 class Login extends Component
 {
-    #[Rule('required')]
+    #[Rule('required', as: 'Email / NIS')]
     public $login = '';
 
-    #[Rule('required')]
+    #[Rule('required', as: 'Password')]
     public $password = '';
 
     public function login()
     {
-        $this->validate([
-            'login' => 'required',
-            'password' => 'required',
-        ]);
+        $this->validate();
 
-        // Determine if login is email or student_id
+        // Determine if login is email or student_id (NIS)
         $fieldType = filter_var($this->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'student_id';
 
         if (Auth::attempt([$fieldType => $this->login, 'password' => $this->password])) {
             session()->regenerate();
 
             $user = Auth::user();
-            $role = $user->role;
             
             // Check if using default password
             if ($this->password === '12345678') {
                 session()->flash('force_password_change', true);
-                if ($role === 'student') {
+                if ($user->role === 'student') {
                     return redirect()->route('student.profile');
                 }
             }
 
             // Redirect based on role
-            if ($role === 'super_admin' || $role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            } elseif ($role === 'operator') {
-                return redirect()->route('operator.dashboard');
-            } elseif ($role === 'wali_kelas') {
-                return redirect()->route('wali-kelas.dashboard');
-            }
-
-            // Redirect students to student dashboard
-            return redirect()->route('student.dashboard');
+            return match ($user->role) {
+                'super_admin', 'admin' => redirect()->route('admin.dashboard'),
+                'operator' => redirect()->route('operator.dashboard'),
+                'wali_kelas' => redirect()->route('wali-kelas.dashboard'),
+                default => redirect()->route('student.dashboard'),
+            };
         }
 
-        $this->addError('login', 'Email/NIS atau password salah.');
+        $this->addError('login', 'Email/NIS atau password yang Anda masukkan salah.');
     }
 
     #[Layout('components.layouts.app')] 
