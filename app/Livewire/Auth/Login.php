@@ -9,20 +9,17 @@ use Livewire\Component;
 
 class Login extends Component
 {
-    #[Rule('required', as: 'Email / NIS')]
-    public $login = '';
+    #[Rule('required|email')]
+    public $email = '';
 
-    #[Rule('required', as: 'Password')]
+    #[Rule('required')]
     public $password = '';
 
     public function login()
     {
         $this->validate();
 
-        // Determine if login is email or student_id (NIS)
-        $fieldType = filter_var($this->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'student_id';
-
-        if (Auth::attempt([$fieldType => $this->login, 'password' => $this->password])) {
+        if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
             session()->regenerate();
 
             $user = Auth::user();
@@ -49,7 +46,7 @@ class Login extends Component
             return redirect()->route('student.dashboard');
         }
 
-        $this->addError('login', 'Email/NIS atau password salah.');
+        $this->addError('email', 'Email atau password salah.');
     }
 
     #[Layout('components.layouts.app')] 
