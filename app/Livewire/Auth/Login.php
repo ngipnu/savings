@@ -22,8 +22,17 @@ class Login extends Component
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
             session()->regenerate();
 
-            $role = Auth::user()->role;
+            $user = Auth::user();
+            $role = $user->role;
             
+            // Check if using default password
+            if ($this->password === '12345678') {
+                session()->flash('force_password_change', true);
+                if ($role === 'student') {
+                    return redirect()->route('student.profile');
+                }
+            }
+
             // Redirect based on role
             if ($role === 'super_admin' || $role === 'admin') {
                 return redirect()->route('admin.dashboard');

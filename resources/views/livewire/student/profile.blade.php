@@ -16,6 +16,23 @@
 
     <div class="p-6 space-y-6 max-w-lg mx-auto">
         <!-- Success Messages -->
+        @if (session()->has('force_password_change'))
+            <div class="p-6 bg-rose-50 border-2 border-rose-200 text-rose-800 rounded-2xl shadow-lg animate-bounce">
+                <div class="flex items-center gap-3 mb-2">
+                    <svg class="w-6 h-6 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <h3 class="font-bold text-lg">Keamanan Akun Terdeteksi!</h3>
+                </div>
+                <p class="text-sm leading-relaxed">
+                    Anda masih menggunakan <strong>password default</strong>. Demi keamanan tabungan Anda, silakan segera ubah password Anda menjadi kombinasi yang lebih kuat di form bawah ini.
+                </p>
+                <div class="mt-4 text-xs font-bold text-rose-600 uppercase tracking-widest">
+                    Gulir kebawah untuk "Ubah Password" ↓
+                </div>
+            </div>
+        @endif
+
         @if (session()->has('message'))
             <div class="p-4 bg-lime-50 border border-lime-200 text-[#1e3a29] rounded-xl">
                 {{ session('message') }}

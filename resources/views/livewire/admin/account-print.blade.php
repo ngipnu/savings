@@ -30,12 +30,16 @@
                 <span class="text-slate-500 text-sm">Kelas</span>
                 <span class="font-medium text-slate-800">{{ $student->classRoom ? $student->classRoom->name : '-' }}</span>
             </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-200">
+                <span class="text-slate-500 text-sm">Password</span>
+                <span class="font-mono font-bold text-rose-600">12345678</span>
+            </div>
             <div class="flex justify-between items-center py-2">
                 <div class="text-left">
-                    <span class="text-slate-500 text-sm block">Password Default</span>
-                    <span class="text-[10px] text-slate-400 italic font-medium">*Silakan hubungi admin jika lupa password</span>
+                    <span class="text-slate-500 text-sm block">Keamanan Akun</span>
+                    <span class="text-[10px] text-slate-400 italic font-medium">*Silakan segera ganti password setelah pertama kali login</span>
                 </div>
-                <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-lg text-sm font-bold">Tersimpan Aman</span>
+                <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-lg text-sm font-bold">Harap Simpan</span>
             </div>
         </div>
     </div>

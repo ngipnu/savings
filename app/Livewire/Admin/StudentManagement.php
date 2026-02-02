@@ -195,6 +195,15 @@ class StudentManagement extends Component
         $this->showModal = true;
     }
 
+    public function resetPassword($id)
+    {
+        $student = User::findOrFail($id);
+        $student->update([
+            'password' => Hash::make('12345678')
+        ]);
+        session()->flash('message', "Password {$student->name} berhasil direset ke: 12345678");
+    }
+
     public function delete($id)
     {
         User::findOrFail($id)->delete();
