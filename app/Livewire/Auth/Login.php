@@ -26,25 +26,30 @@ class Login extends Component
             session()->regenerate();
 
             $user = Auth::user();
+            $role = $user->role;
             
             // Check if using default password
             if ($this->password === '12345678') {
                 session()->flash('force_password_change', true);
-                if ($user->role === 'student') {
+                if ($role === 'student') {
                     return redirect()->route('student.profile');
                 }
             }
 
             // Redirect based on role
-            return match ($user->role) {
-                'super_admin', 'admin' => redirect()->route('admin.dashboard'),
-                'operator' => redirect()->route('operator.dashboard'),
-                'wali_kelas' => redirect()->route('wali-kelas.dashboard'),
-                default => redirect()->route('student.dashboard'),
-            };
+            if ($role === 'super_admin' || $role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($role === 'operator') {
+                return redirect()->route('operator.dashboard');
+            } elseif ($role === 'wali_kelas') {
+                return redirect()->route('wali-kelas.dashboard');
+            }
+
+            // Redirect students to student dashboard
+            return redirect()->route('student.dashboard');
         }
 
-        $this->addError('login', 'Email/NIS atau password yang Anda masukkan salah.');
+        $this->addError('login', 'Email/NIS atau password salah.');
     }
 
     #[Layout('components.layouts.app')] 

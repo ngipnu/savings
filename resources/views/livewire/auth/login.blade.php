@@ -1,7 +1,7 @@
 <div class="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-lime-50 to-slate-100 p-6">
     <!-- Background Accents -->
-    <div class="absolute top-0 right-0 w-96 h-96 bg-lime-300 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
-    <div class="absolute bottom-0 left-0 w-96 h-96 bg-[#1e3a29] rounded-full blur-3xl opacity-10 translate-y-1/2 -translate-x-1/2"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-lime-300 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-[#1e3a29] rounded-full blur-3xl opacity-10 translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
 
     <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 relative z-10 border border-white/50 backdrop-blur-md">
         <div class="text-center mb-8">
@@ -12,15 +12,19 @@
             <p class="text-slate-500 text-sm mt-2">Tabungan Siswa An Nadzir - Silakan login untuk mengakses akun Anda.</p>
         </div>
 
-        <form wire:submit="login" class="space-y-6">
+        <form wire:submit.prevent="login" class="space-y-6">
             <div>
                 <label for="login" class="block text-sm font-medium text-slate-700 mb-2">Email / NIS</label>
                 <div class="relative">
+                    <input wire:model="login" type="text" id="login" 
+                        @class([
+                            'w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-lime-400 focus:border-lime-400 transition-all outline-none text-slate-700 bg-slate-50 focus:bg-white',
+                            'border-red-500 ring-red-100' => $errors->has('login'),
+                            'border-slate-200' => !$errors->has('login'),
+                        ])
+                        placeholder="Masukkan Email atau NIS">
                     @error('login')
-                        <input wire:model="login" type="text" id="login" class="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-lime-400 focus:border-lime-400 transition-all outline-none text-slate-700 bg-slate-50 focus:bg-white border-red-500 ring-red-100" placeholder="Masukkan Email atau NIS">
                         <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span>
-                    @else
-                        <input wire:model="login" type="text" id="login" class="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-lime-400 focus:border-lime-400 transition-all outline-none text-slate-700 bg-slate-50 focus:bg-white border-slate-200" placeholder="Masukkan Email atau NIS">
                     @enderror
                 </div>
             </div>
@@ -28,11 +32,15 @@
             <div>
                 <label for="password" class="block text-sm font-medium text-slate-700 mb-2">Password</label>
                 <div class="relative">
+                    <input wire:model="password" type="password" id="password" 
+                        @class([
+                            'w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-lime-400 focus:border-lime-400 transition-all outline-none text-slate-700 bg-slate-50 focus:bg-white',
+                            'border-red-500 ring-red-100' => $errors->has('password'),
+                            'border-slate-200' => !$errors->has('password'),
+                        ])
+                        placeholder="••••••••">
                     @error('password')
-                        <input wire:model="password" type="password" id="password" class="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-lime-400 focus:border-lime-400 transition-all outline-none text-slate-700 bg-slate-50 focus:bg-white border-red-500 ring-red-100" placeholder="••••••••">
                         <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span>
-                    @else
-                        <input wire:model="password" type="password" id="password" class="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-lime-400 focus:border-lime-400 transition-all outline-none text-slate-700 bg-slate-50 focus:bg-white border-slate-200" placeholder="••••••••">
                     @enderror
                 </div>
             </div>
