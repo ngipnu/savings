@@ -14,13 +14,13 @@
 
         <form wire:submit="login" class="space-y-6">
             <div>
-                <label for="email" class="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+                <label for="login" class="block text-sm font-medium text-slate-700 mb-2">Email / NIS</label>
                 <div class="relative">
-                    @error('email')
-                        <input wire:model="email" type="email" id="email" class="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-lime-400 focus:border-lime-400 transition-all outline-none text-slate-700 bg-slate-50 focus:bg-white border-red-500 ring-red-100" placeholder="nama@sekolah.sch.id">
+                    @error('login')
+                        <input wire:model="login" type="text" id="login" class="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-lime-400 focus:border-lime-400 transition-all outline-none text-slate-700 bg-slate-50 focus:bg-white border-red-500 ring-red-100" placeholder="Masukkan Email atau NIS">
                         <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span>
                     @else
-                        <input wire:model="email" type="email" id="email" class="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-lime-400 focus:border-lime-400 transition-all outline-none text-slate-700 bg-slate-50 focus:bg-white border-slate-200" placeholder="nama@sekolah.sch.id">
+                        <input wire:model="login" type="text" id="login" class="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-lime-400 focus:border-lime-400 transition-all outline-none text-slate-700 bg-slate-50 focus:bg-white border-slate-200" placeholder="Masukkan Email atau NIS">
                     @enderror
                 </div>
             </div>
