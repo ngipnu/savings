@@ -9,6 +9,7 @@ use Livewire\Component;
 
 class Login extends Component
 {
+    #[Rule('required')]
     public $login = '';
 
     #[Rule('required')]
