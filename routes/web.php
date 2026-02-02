@@ -39,6 +39,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/products', ProductManagement::class)->name('products');
         Route::get('/reports', Reports::class)->name('reports');
         Route::get('/academic-years', AcademicYearManagement::class)->name('academic-years');
+        Route::get('/students/{id}/print-account', \App\Livewire\Admin\AccountPrint::class)->name('student.print-account');
     });
 
     // Operator Routes

@@ -80,6 +80,13 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('printAccount')
+                    ->label('Cetak Akun')
+                    ->icon('heroicon-o-printer')
+                    ->color('success')
+                    ->url(fn (User $record): string => route('admin.student.print-account', $record))
+                    ->openUrlInNewTab()
+                    ->visible(fn (User $record): bool => $record->role === 'student'),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
