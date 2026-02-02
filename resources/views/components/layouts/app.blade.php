@@ -28,12 +28,38 @@
         }
     </script>
     
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <style>
          [x-cloak] { display: none !important; }
+         
+         /* Choices.js Custom Styling */
+         .choices__inner {
+             background-color: white;
+             border: 1px solid #e2e8f0; /* slate-200 */
+             border-radius: 0.5rem; /* rounded-lg */
+             padding: 0.5rem 1rem;
+             min-height: 46px; 
+             font-size: 0.875rem; /* text-sm */
+         }
+         .choices:focus-within .choices__inner {
+             border-color: transparent;
+             box-shadow: 0 0 0 2px #10b981; /* primary / emerald-500 */
+         }
+         .choices__list--dropdown {
+             border: 1px solid #e2e8f0;
+             border-radius: 0.5rem;
+             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+             margin-top: 4px;
+         }
+         .choices__list--dropdown .choices__item--selectable.is-highlighted {
+             background-color: #ecfdf5; /* emerald-50 */
+             color: #064e3b;
+         }
     </style>
     @livewireStyles
 </head>
-<body class="bg-gray-50 text-slate-800 font-sans antialiased">
+<body class="bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 min-h-screen text-slate-800 font-sans antialiased">
     {{ $slot }}
     @livewireScripts
 </body>

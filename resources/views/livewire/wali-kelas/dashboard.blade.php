@@ -16,6 +16,27 @@
                 <h1 class="text-3xl font-bold text-[#1e3a29] tracking-tight">Dashboard Wali Kelas</h1>
                 <p class="text-slate-500 mt-1">Kelas {{ $teacherClass->name }} - {{ $user->name }}</p>
             </div>
+            <div class="flex items-center gap-2">
+                <!-- Notification Bell -->
+                <div class="relative">
+                    <button class="p-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors relative">
+                        <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        @if($notifications['unread_count'] > 0)
+                            <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">{{ $notifications['unread_count'] }}</span>
+                        @endif
+                    </button>
+                </div>
+                
+                <!-- Profile Button -->
+                <a href="{{ route('wali-kelas.profile') }}" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 transition-colors font-medium flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>
+                    <span class="hidden md:inline">Profile Saya</span>
+                </a>
+            </div>
         </div>
 
         <!-- Stats Cards -->

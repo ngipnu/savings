@@ -15,12 +15,13 @@ class Dashboard extends Component
         $user = Auth::user();
         
         // Get teacher's class
-        $teacherClass = $user->classRoom;
+        $teacherClass = $user->teachingClass;
         
         if (!$teacherClass) {
             return view('livewire.wali-kelas.dashboard', [
                 'hasClass' => false,
                 'user' => $user,
+                'notifications' => $this->getNotifications(false, null, 0),
             ])->layout('components.layouts.admin', ['title' => 'Dashboard Wali Kelas']);
         }
         
@@ -64,7 +65,25 @@ class Dashboard extends Component
             'classBalance' => $classBalance,
             'topSavers' => $topSavers,
             'user' => $user,
+            'notifications' => $this->getNotifications(true, $teacherClass, $students->count()),
         ])->layout('components.layouts.admin', ['title' => 'Dashboard Wali Kelas']);
+    }
+
+    private function getNotifications($hasClass, $teacherClass, $studentsCount)
+    {
+        if (!$hasClass) {
+            return [
+                'unread_count' => 0,
+                'students_count' => 0,
+                'class_name' => '-',
+            ];
+        }
+
+        return [
+            'unread_count' => 0,
+            'students_count' => $studentsCount,
+            'class_name' => $teacherClass->name,
+        ];
     }
 
     public function logout()

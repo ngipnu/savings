@@ -22,11 +22,21 @@
                 <input wire:model.live="endDate" type="date" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
             </div>
             <div>
-                <button wire:click="openDepositModal" class="px-6 py-2.5 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-all mr-3">
-                    Catat Setoran Bank
+                <button wire:click="openDepositModal" class="px-4 py-2.5 md:px-6 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-all mr-3">
+                    <span class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M12 9.75l-3 3m0 0l3 3m-3-3h7.5M12 9.75V3" />
+                         </svg>
+                        <span class="hidden md:inline">Catat Setoran Bank</span>
+                    </span>
                 </button>
-                <button wire:click="openWithdrawalModal" class="px-6 py-2.5 bg-rose-600 text-white rounded-lg font-semibold hover:bg-rose-700 transition-all">
-                    Catat Penarikan Bank
+                <button wire:click="openWithdrawalModal" class="px-4 py-2.5 md:px-6 bg-rose-600 text-white rounded-lg font-semibold hover:bg-rose-700 transition-all">
+                    <span class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                        </svg>
+                        <span class="hidden md:inline">Catat Penarikan Bank</span>
+                    </span>
                 </button>
             </div>
         </div>
@@ -112,41 +122,44 @@
             <table class="w-full">
                 <thead class="bg-slate-50">
                     <tr class="text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                        <th class="px-6 py-4">Tanggal</th>
-                        <th class="px-6 py-4">Tipe</th>
-                        <th class="px-6 py-4">Jumlah</th>
-                        <th class="px-6 py-4">Keterangan</th>
-                        <th class="px-6 py-4">Dicatat Oleh</th>
-                        <th class="px-6 py-4">Aksi</th>
+                        <th class="px-3 py-3 md:px-6 md:py-4">Tanggal</th>
+                        <th class="px-3 py-3 md:px-6 md:py-4">Tipe</th>
+                        <th class="px-3 py-3 md:px-6 md:py-4">Jumlah</th>
+                        <th class="px-3 py-3 md:px-6 md:py-4 hidden md:table-cell">Keterangan</th>
+                        <th class="px-3 py-3 md:px-6 md:py-4 hidden md:table-cell">Dicatat Oleh</th>
+                        <th class="px-3 py-3 md:px-6 md:py-4">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($bankTransactions as $deposit)
                     <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 text-sm text-slate-600">
+                        <td class="px-3 py-3 md:px-6 md:py-4 text-xs md:text-sm text-slate-600">
                             {{ \Carbon\Carbon::parse($deposit->date)->format('d M Y') }}
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-3 py-3 md:px-6 md:py-4">
                             @if($deposit->type === 'deposit')
-                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-sm font-bold">Setoran</span>
+                                <span class="px-2 py-1 md:px-3 md:py-1 bg-emerald-100 text-emerald-700 rounded-lg text-xs md:text-sm font-bold">Setoran</span>
                             @else
-                                <span class="px-3 py-1 bg-rose-100 text-rose-700 rounded-lg text-sm font-bold">Penarikan</span>
+                                <span class="px-2 py-1 md:px-3 md:py-1 bg-rose-100 text-rose-700 rounded-lg text-xs md:text-sm font-bold">Penarikan</span>
                             @endif
                         </td>
-                        <td class="px-6 py-4">
-                            <span class="font-bold {{ $deposit->type === 'deposit' ? 'text-emerald-600' : 'text-rose-600' }}">
+                        <td class="px-3 py-3 md:px-6 md:py-4">
+                            <span class="font-bold {{ $deposit->type === 'deposit' ? 'text-emerald-600' : 'text-rose-600' }} text-sm md:text-base">
                                 {{ $deposit->type === 'deposit' ? '+' : '-' }}Rp {{ number_format($deposit->amount, 0, ',', '.') }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 text-sm text-slate-600">
+                        <td class="px-3 py-3 md:px-6 md:py-4 text-xs md:text-sm text-slate-600 hidden md:table-cell">
                             {{ $deposit->notes ?? '-' }}
                         </td>
-                        <td class="px-6 py-4 text-sm text-slate-600">
+                        <td class="px-3 py-3 md:px-6 md:py-4 text-xs md:text-sm text-slate-600 hidden md:table-cell">
                             {{ $deposit->creator->name }}
                         </td>
-                        <td class="px-6 py-4">
-                            <button wire:click="deleteBankDeposit({{ $deposit->id }})" wire:confirm="Yakin ingin menghapus catatan ini?" class="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium">
-                                Hapus
+                        <td class="px-3 py-3 md:px-6 md:py-4">
+                            <button wire:click="deleteBankDeposit({{ $deposit->id }})" wire:confirm="Yakin ingin menghapus catatan ini?" class="px-2 py-1 md:px-3 md:py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-xs md:text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 md:hidden">
+                                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                </svg>
+                                <span class="hidden md:inline">Hapus</span>
                             </button>
                         </td>
                     </tr>

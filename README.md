@@ -1,59 +1,262 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# TASIA - Tabungan Siswa An Nadzir
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Laravel](https://img.shields.io/badge/Laravel-12.x-red.svg)
+![Livewire](https://img.shields.io/badge/Livewire-3.x-pink.svg)
+![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.x-blue.svg)
+![Alpine.js](https://img.shields.io/badge/Alpine.js-3.x-teal.svg)
+![PHP](https://img.shields.io/badge/PHP-8.5+-purple.svg)
 
-## About Laravel
+**TASIA** (Tabungan Siswa An Nadzir) adalah sistem manajemen tabungan siswa berbasis web yang dirancang khusus untuk sekolah. Aplikasi ini memudahkan pengelolaan tabungan siswa dengan fitur lengkap mulai dari pencatatan transaksi, persetujuan, hingga pelaporan yang komprehensif.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📋 Daftar Isi
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- [Fitur Utama](#-fitur-utama)
+- [Tech Stack](#-tech-stack)
+- [User Roles](#-user-roles)
+- [Screenshots](#-screenshots)
+- [Instalasi](#-instalasi)
+- [Konfigurasi](#-konfigurasi)
+- [Default Credentials](#-default-credentials)
+- [Struktur Database](#-struktur-database)
+- [Penggunaan](#-penggunaan)
+- [Kontribusi](#-kontribusi)
+- [Lisensi](#-lisensi)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## ✨ Fitur Utama
 
-## Learning Laravel
+### 🎯 Dashboard Interaktif
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Gradient Background** - Desain modern dengan gradasi warna yang elegan
+- **Real-time Statistics** - Statistik langsung update
+- **Responsive Design** - Optimal di semua perangkat (desktop, tablet, mobile)
+- **Search Functionality** - Pencarian real-time dengan auto-scroll dan highlight
+- **Interactive Notifications** - System notifikasi clickable dengan dropdown
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 👤 Multi-Role Management
 
-## Laravel Sponsors
+#### 1️⃣ **Super Admin / Admin**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Dashboard komprehensif dengan visualisasi data
+- Manajemen user (CRUD untuk semua role)
+- Manajemen kelas dan produk tabungan
+- Approval/reject transaksi pending
+- Real-time search untuk transaksi
+- Notification bell dengan dropdown
+- Laporan lengkap dengan filter dan export
+- Multi-currency support (Rupiah)
 
-### Premium Partners
+#### 2️⃣ **Operator**
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- Entry transaksi setoran & penarikan
+- Monitoring transaksi hari ini
+- Notifikasi transaksi pending
+- Quick access ke pending approvals
+- Dashboard statistik operasional
 
-## Contributing
+#### 3️⃣ **Wali Kelas**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Dashboard kelas dengan statistik siswa
+- Monitoring tabungan per siswa
+- Top savers leaderboard
+- Profil management
+- Class balance overview
+- Notifikasi sistem (prepared)
 
-## Code of Conduct
+#### 4️⃣ **Siswa**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Dashboard personal dengan saldo tabungan
+- Multiple saving accounts (berdasarkan produk)
+- Riwayat transaksi lengkap
+- Notifikasi transaksi pending pribadi
+- Profile management dengan foto
+- Mobile-friendly interface
 
-## Security Vulnerabilities
+### 💳 Manajemen Transaksi
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **Deposit (Setoran)** - Pencatatan setoran dengan approval workflow
+- **Withdrawal (Penarikan)** - Penarikan dengan validasi saldo
+- **Transaction Status** - Pending, Approved, Rejected
+- **Transaction History** - Riwayat lengkap dengan filter
+- **Real-time Balance** - Update saldo otomatis
+- **Search & Filter** - Pencarian berdasarkan nama, NIS, produk
 
-## License
+### 🔔 Notification System
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Badge Counter** - Visual badge dengan jumlah notifikasi
+- **Dropdown Preview** - Preview 5 notifikasi terbaru
+- **Click to Action** - Klik notifikasi langsung ke halaman terkait
+- **Real-time Updates** - Update otomatis saat ada transaksi baru
+- **Role-based Notifications** - Notifikasi disesuaikan per role
+
+### 📊 Reporting & Analytics
+
+- **Dashboard Statistics** - Overview lengkap dengan cards
+- **Chart Visualization** - Grafik cashflow bulanan
+- **Top Savers** - Leaderboard penabung terbaik
+- **Class Performance** - Performa per kelas
+- **Export Data** - Export ke Excel/PDF (future feature)
+
+### 🎨 UI/UX Features
+
+- **Modern Design** - Interface premium dengan Tailwind CSS
+- **Smooth Animations** - Alpine.js untuk transisi halus
+- **Loading States** - Feedback visual saat loading
+- **Empty States** - Pesan informatif saat tidak ada data
+- **Hover Effects** - Interactive hover states
+- **Mobile Optimized** - Touch-friendly untuk mobile devices
+- **Dark Mode Ready** - Prepared untuk dark mode (future)
+
+## 🛠 Tech Stack
+
+### Backend
+
+- **Laravel 12.x** - PHP Framework
+- **Livewire 3.x** - Full-stack framework untuk Laravel
+- **PHP 8.5+** - Modern PHP with typed properties
+
+### Frontend
+
+- **Tailwind CSS 3.x** - Utility-first CSS framework
+- **Alpine.js 3.x** - Lightweight JavaScript framework
+- **Blade Templates** - Laravel's templating engine
+- **Google Fonts (Outfit)** - Modern typography
+
+### Database
+
+- **SQLite** - Default untuk development
+- **MySQL/PostgreSQL** - Production ready
+
+### Additional Tools
+
+- **Vite** - Frontend build tool
+- **NPM** - Package manager
+- **Composer** - PHP dependency manager
+
+## 👥 User Roles
+
+| Role            | Akses Level | Fitur Utama                     |
+| --------------- | ----------- | ------------------------------- |
+| **Super Admin** | Full Access | Semua fitur + User Management   |
+| **Admin**       | Full Access | Dashboard, Reports, Approvals   |
+| **Operator**    | Limited     | Entry Transaksi, View Reports   |
+| **Wali Kelas**  | Class Scope | Monitoring Kelas, Class Reports |
+| **Siswa**       | Personal    | View Saldo, History Transaksi   |
+
+## 📸 Screenshots
+
+> _Screenshots akan ditambahkan di sini_
+
+```
+[Dashboard Admin]  [Transaction Page]  [Student Dashboard]
+```
+
+## 🚀 Instalasi
+
+### Prerequisites
+
+- PHP >= 8.5
+- Composer
+- Node.js & NPM
+- SQLite Extension (untuk development)
+
+### Langkah Instalasi
+
+1. **Clone Repository**
+
+```bash
+git clone https://github.com/ngipnu/tasia.git
+cd tasia
+```
+
+2. **Install Dependencies**
+
+```bash
+composer install
+npm install
+```
+
+3. **Environment Setup**
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4. **Database Setup**
+
+```bash
+# Untuk SQLite (default)
+touch database/database.sqlite
+
+# Jalankan migrasi
+php artisan migrate
+
+# Seed data (opsional)
+php artisan db:seed
+```
+
+5. **Build Assets**
+
+```bash
+npm run build
+# atau untuk development
+npm run dev
+```
+
+6. **Run Application**
+
+```bash
+php artisan serve
+```
+
+Aplikasi akan berjalan di `http://localhost:8000`
+
+## ⚙️ Konfigurasi
+
+### Database Configuration (.env)
+
+**SQLite (Default - Development):**
+
+```env
+DB_CONNECTION=sqlite
+DB_DATABASE=/absolute/path/to/database.sqlite
+```
+
+**MySQL (Production):**
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=tasia
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### App Configuration
+
+```env
+APP_NAME=TASIA
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+
+## 📄 Lisensi
+
+This project is open-sourced software licensed under the [MIT license](LICENSE).
+
+## 👨‍💻 Developer
+
+Developed with ❤️ by **An Nadzir Islamic School**
+
+## 📞 Kontak & Support
+
+- **Email**: support@annadzir.sch.id
+- **Website**: https://annadzir.sch.id
+
+---
+
+**TASIA** - Simplifying School Savings Management 🎓💰
+
+Made with Laravel, Livewire, and Tailwind CSS
+```

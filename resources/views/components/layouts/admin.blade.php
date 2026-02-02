@@ -27,12 +27,38 @@
             }
         }
     </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
+        
+        /* Choices.js Custom Styling */
+        .choices__inner {
+            background-color: white;
+            border: 1px solid #e2e8f0; /* slate-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.5rem 1rem;
+            min-height: 46px; 
+            font-size: 0.875rem; /* text-sm */
+        }
+        .choices:focus-within .choices__inner {
+            border-color: transparent;
+            box-shadow: 0 0 0 2px #a3e635; /* ring-lime-400 */
+        }
+        .choices__list--dropdown {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-top: 4px;
+        }
+        .choices__list--dropdown .choices__item--selectable.is-highlighted {
+            background-color: #f7fee7; /* lime-50 */
+            color: #1e3a29;
+        }
     </style>
     @livewireStyles
 </head>
-<body class="bg-[#f8fafc] text-slate-800 font-sans antialiased" x-data="{ mobileMenuOpen: false }">
+<body class="bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 min-h-screen text-slate-800 font-sans antialiased" x-data="{ mobileMenuOpen: false }">
     
     <div class="min-h-screen flex flex-col md:flex-row">
         <!-- Sidebar -->
@@ -125,15 +151,36 @@
             </nav>
 
             <div class="p-4 border-t border-slate-100">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="flex items-center gap-3 px-4 py-3 w-full rounded-xl transition-all font-medium text-sm text-red-500 hover:bg-red-50">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                <div class="flex items-center gap-3 px-2">
+                    @php
+                        $role = Auth::user()->role;
+                        $profileUrl = match($role) {
+                            'student' => route('student.profile'),
+                            'wali_kelas' => route('wali-kelas.profile'),
+                            default => '#',
+                        };
+                    @endphp
+                    
+                    <a href="{{ $profileUrl }}" class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-lime-100 hover:text-[#1e3a29] transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                            <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
                         </svg>
-                        Log Out
-                    </button>
-                </form>
+                    </a>
+
+                    <div class="flex-1 min-w-0">
+                        <div class="font-medium text-sm text-slate-800 truncate">{{ Auth::user()->name }}</div>
+                        <div class="text-xs text-slate-500 capitalize truncate">{{ str_replace('_', ' ', $role) }}</div>
+                    </div>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="p-2 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors" title="Log Out">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
             </div>
         </aside>
 
@@ -241,15 +288,36 @@
                 </nav>
 
                 <div class="p-4 border-t border-slate-100">
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="flex items-center gap-3 px-4 py-3 w-full rounded-xl transition-all font-medium text-sm text-red-500 hover:bg-red-50">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                    <div class="flex items-center gap-3 px-2">
+                        @php
+                            $role = Auth::user()->role;
+                            $profileUrl = match($role) {
+                                'student' => route('student.profile'),
+                                'wali_kelas' => route('wali-kelas.profile'),
+                                default => '#',
+                            };
+                        @endphp
+                        
+                        <a href="{{ $profileUrl }}" class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-lime-100 hover:text-[#1e3a29] transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                                <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
                             </svg>
-                            Log Out
-                        </button>
-                    </form>
+                        </a>
+
+                        <div class="flex-1 min-w-0">
+                            <div class="font-medium text-sm text-slate-800 truncate">{{ Auth::user()->name }}</div>
+                            <div class="text-xs text-slate-500 capitalize truncate">{{ str_replace('_', ' ', $role) }}</div>
+                        </div>
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="p-2 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors" title="Log Out">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="flex-1 bg-black/20" @click="mobileMenuOpen = false"></div>

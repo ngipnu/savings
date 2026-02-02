@@ -10,6 +10,8 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
+    public $search = '';
+
     public function render()
     {
         // Current month dates
@@ -89,14 +91,25 @@ class Dashboard extends Component
             $maxValue = max($maxValue, $data['income'], $data['expense']);
         }
 
-        // 3. Transactions List
+        // 3. Transactions List with Search
         $recentTransactions = Transaction::with(['user', 'savingType'])
+            ->when($this->search, function($query) {
+                $query->whereHas('user', function($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('student_id', 'like', '%' . $this->search . '%');
+                })->orWhereHas('savingType', function($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%');
+                });
+            })
             ->latest()
-            ->take(5)
+            ->take(10)
             ->get();
 
         // 4. Get Active Academic Year
         $activeYear = \App\Models\AcademicYear::where('is_active', true)->first();
+
+        // 5. Get Notifications
+        $notifications = $this->getNotifications();
 
         return view('livewire.admin.dashboard', [
             'totalBalance' => $totalBalance,
@@ -113,7 +126,20 @@ class Dashboard extends Component
             'recentTransactions' => $recentTransactions,
             'activeYear' => $activeYear,
             'user' => Auth::user(),
+            'notifications' => $notifications,
         ])->layout('components.layouts.admin', ['title' => 'Admin Dashboard']);
+    }
+
+    private function getNotifications()
+    {
+        $pendingCount = Transaction::where('status', 'pending')->count();
+        $todayTransactions = Transaction::whereDate('created_at', today())->count();
+        
+        return [
+            'pending_count' => $pendingCount,
+            'today_transactions' => $todayTransactions,
+            'unread_count' => $pendingCount, // For badge
+        ];
     }
 
     public function logout()

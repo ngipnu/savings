@@ -37,9 +37,9 @@ class StudentManagement extends Component
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . ($this->studentId ?? 'NULL'),
+            'email' => ['required', 'email', \Illuminate\Validation\Rule::unique('users', 'email')->ignore($this->studentId)],
             'password' => $this->editMode ? 'nullable|min:6' : 'required|min:6',
-            'student_id' => 'required|string|unique:users,student_id,' . ($this->studentId ?? 'NULL'),
+            'student_id' => ['required', 'string', \Illuminate\Validation\Rule::unique('users', 'student_id')->ignore($this->studentId)],
             'class_room_id' => 'required|exists:class_rooms,id',
             'phone' => 'nullable|string',
             'address' => 'nullable|string',
@@ -51,6 +51,8 @@ class StudentManagement extends Component
 
     public function render()
     {
+        $user = auth()->user();
+        
         $students = User::where('role', 'student')
             ->with('classRoom')
             ->when($this->search, function($query) {
@@ -63,9 +65,16 @@ class StudentManagement extends Component
             ->when($this->filterClass, function($query) {
                 $query->where('class_room_id', $this->filterClass);
             })
+            ->when($user->role === 'wali_kelas', function($query) use ($user) {
+                $query->where('class_room_id', $user->teachingClass->id ?? 0);
+            })
             ->paginate(10);
 
-        $classes = ClassRoom::all();
+        if ($user->role === 'wali_kelas') {
+            $classes = ClassRoom::where('id', $user->teachingClass->id ?? 0)->get();
+        } else {
+            $classes = ClassRoom::all();
+        }
 
         return view('livewire.admin.student-management', [
             'students' => $students,
@@ -105,12 +114,19 @@ class StudentManagement extends Component
         $this->email = '';
         $this->password = '';
         $this->student_id = '';
-        $this->class_room_id = null;
         $this->phone = '';
         $this->address = '';
         $this->parent_name = '';
         $this->parent_phone = '';
         $this->parent_email = '';
+        
+        $user = auth()->user();
+        if ($user->role === 'wali_kelas') {
+            $this->class_room_id = $user->teachingClass->id ?? null;
+        } else {
+            $this->class_room_id = null;
+        }
+
         $this->resetErrorBag();
     }
 

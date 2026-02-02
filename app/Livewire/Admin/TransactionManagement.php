@@ -29,6 +29,7 @@ class TransactionManagement extends Component
     public $status = 'pending';
     
     public $search = '';
+    public $studentSearch = '';
     public $filterType = '';
     public $filterStatus = '';
 
@@ -93,12 +94,18 @@ class TransactionManagement extends Component
         $this->date = now()->format('Y-m-d');
         $this->description = '';
         $this->status = 'pending';
+        $this->studentSearch = ''; 
+        $this->dispatch('transaction-saved');
         $this->resetErrorBag();
     }
 
     public function save()
     {
         $this->validate();
+
+        if (auth()->user()->role === 'operator') {
+            $this->status = 'pending';
+        }
 
         if ($this->editMode) {
             $transaction = Transaction::findOrFail($this->transactionId);
@@ -141,10 +148,14 @@ class TransactionManagement extends Component
         $this->description = $transaction->description;
         $this->status = $transaction->status;
         $this->showModal = true;
+        $this->dispatch('set-student-choice', userId: $this->user_id);
     }
 
     public function approve($id)
     {
+        if (auth()->user()->role !== 'super_admin') {
+            return;
+        }
         $transaction = Transaction::findOrFail($id);
         $transaction->update(['status' => 'approved']);
         session()->flash('message', 'Transaksi berhasil disetujui!');
@@ -152,6 +163,9 @@ class TransactionManagement extends Component
 
     public function reject($id)
     {
+        if (auth()->user()->role !== 'super_admin') {
+            return;
+        }
         $transaction = Transaction::findOrFail($id);
         $transaction->update(['status' => 'rejected']);
         session()->flash('message', 'Transaksi ditolak!');
@@ -162,6 +176,22 @@ class TransactionManagement extends Component
         Transaction::findOrFail($id)->delete();
         session()->flash('message', 'Transaksi berhasil dihapus!');
     }
+
+    public function approveAll()
+    {
+        if (auth()->user()->role !== 'super_admin') {
+            return;
+        }
+        $count = Transaction::where('status', 'pending')->count();
+        
+        if ($count > 0) {
+            Transaction::where('status', 'pending')->update(['status' => 'approved']);
+            session()->flash('message', "$count transaksi berhasil disetujui sekaligus!");
+        } else {
+            session()->flash('message', 'Tidak ada transaksi pending untuk disetujui.');
+        }
+    }
+
 
     public function openImportModal()
     {

@@ -14,6 +14,7 @@ use App\Livewire\Admin\Reports;
 use App\Livewire\Admin\AcademicYearManagement;
 use App\Livewire\Operator\Dashboard as OperatorDashboard;
 use App\Livewire\WaliKelas\Dashboard as WaliKelasDashboard;
+use App\Livewire\WaliKelas\Profile as WaliKelasProfile;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,6 +34,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/students', StudentManagement::class)->name('students');
         Route::get('/managers', ManagerAccounts::class)->name('managers');
         Route::get('/transactions', TransactionManagement::class)->name('transactions');
+        Route::get('/transactions/{id}/receipt', \App\Livewire\Admin\TransactionReceipt::class)->name('transaction.receipt');
+        Route::get('/classes/{id}/recap', \App\Livewire\Admin\ClassRecap::class)->name('class.recap');
         Route::get('/products', ProductManagement::class)->name('products');
         Route::get('/reports', Reports::class)->name('reports');
         Route::get('/academic-years', AcademicYearManagement::class)->name('academic-years');
@@ -46,6 +49,7 @@ Route::middleware(['auth'])->group(function () {
     // Wali Kelas Routes
     Route::prefix('wali-kelas')->name('wali-kelas.')->group(function () {
         Route::get('/dashboard', WaliKelasDashboard::class)->name('dashboard');
+        Route::get('/profile', WaliKelasProfile::class)->name('profile');
     });
 
     Route::post('/logout', function () {

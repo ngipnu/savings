@@ -1,16 +1,226 @@
-<div>
+<div x-data="{ 
+    searchOpen: false,
+    notificationOpen: false,
+    init() {
+        this.$watch('searchOpen', value => {
+            if (value && this.$wire.search) {
+                setTimeout(() => {
+                    document.getElementById('search-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        });
+    }
+}" 
+x-init="
+    Livewire.hook('morph.updated', ({ component }) => {
+        if (component.fingerprint.name === 'admin.dashboard' && $wire.search && $wire.search.length > 0) {
+            setTimeout(() => {
+                document.getElementById('search-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 150);
+        }
+    });
+">
     <div class="mb-8 flex justify-between items-center">
         <div>
             <h1 class="text-3xl font-bold text-[#1e3a29] tracking-tight">Dashboard</h1>
             <p class="text-slate-500 mt-1">Selamat datang kembali, {{ $user->name }}</p>
         </div>
-        <div>
-             <div class="relative">
-                <input type="text" placeholder="Search..." class="bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm w-64 focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+        <div class="flex items-center gap-3">
+            <!-- Notification Bell -->
+            <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                <button @click="open = !open" class="p-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors relative">
+                    <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    @if($notifications['unread_count'] > 0)
+                        <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">{{ $notifications['unread_count'] }}</span>
+                    @endif
+                </button>
+
+                <!-- Notification Dropdown -->
+                <div x-show="open"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     class="absolute right-0 mt-2 w-96 bg-white rounded-xl shadow-xl border border-slate-200 z-50"
+                     x-cloak>
+                    <div class="p-4 border-b border-slate-100">
+                        <h3 class="font-bold text-slate-800">Notifikasi</h3>
+                        <p class="text-xs text-slate-500 mt-1">{{ $notifications['pending_count'] }} transaksi menunggu persetujuan</p>
+                    </div>
+                    <div class="max-h-96 overflow-y-auto">
+                        @php
+                            $pendingTransactions = \App\Models\Transaction::where('status', 'pending')
+                                ->with(['user', 'savingType'])
+                                ->latest()
+                                ->take(5)
+                                ->get();
+                        @endphp
+                        
+                        @forelse($pendingTransactions as $transaction)
+                            <a href="{{ route('admin.transactions') }}?filter=pending" class="block px-4 py-3 hover:bg-slate-50 transition-colors border-b border-slate-50">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-10 h-10 rounded-full {{ $transaction->type === 'deposit' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600' }} flex items-center justify-center flex-shrink-0">
+                                        @if($transaction->type === 'deposit')
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" /></svg>
+                                        @else
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" /></svg>
+                                        @endif
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-bold text-slate-800 truncate">{{ $transaction->user->name }}</p>
+                                        <p class="text-xs text-slate-500">{{ $transaction->savingType->name }} • Rp {{ number_format($transaction->amount, 0, ',', '.') }}</p>
+                                        <p class="text-xs text-slate-400 mt-1">{{ $transaction->created_at->diffForHumans() }}</p>
+                                    </div>
+                                    <span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs font-medium">Pending</span>
+                                </div>
+                            </a>
+                        @empty
+                            <div class="px-4 py-8 text-center text-slate-400 text-sm">
+                                <svg class="w-12 h-12 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <p>Tidak ada notifikasi</p>
+                            </div>
+                        @endforelse
+                    </div>
+                    @if($notifications['pending_count'] > 0)
+                        <div class="p-3 border-t border-slate-100">
+                            <a href="{{ route('admin.transactions') }}?filter=pending" class="block text-center text-sm font-medium text-[#1e3a29] hover:text-lime-600">
+                                Lihat Semua Transaksi Pending
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+            
+            <!-- Search Toggle Button (Mobile Only) -->
+            <button @click="searchOpen = !searchOpen" class="md:hidden p-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+                <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </button>
+            
+            <!-- Desktop Search Box -->
+            <div class="hidden md:block relative">
+                <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari transaksi..." class="bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm w-64 focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none pr-10">
                 <svg class="w-4 h-4 text-slate-400 absolute right-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             </div>
         </div>
     </div>
+
+    <!-- Mobile Search Box (Expandable) -->
+    <div x-show="searchOpen" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-2"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 -translate-y-2"
+         class="md:hidden mb-4 relative"
+         x-cloak>
+        <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari transaksi..." class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none pr-10" autofocus>
+        <svg class="w-4 h-4 text-slate-400 absolute right-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+    </div>
+
+    @if($search)
+        <div class="mb-4 px-4 py-3 bg-lime-50 border border-lime-200 rounded-xl flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-lime-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <span class="text-sm font-medium text-lime-900">Hasil pencarian untuk: <strong>"{{ $search }}"</strong></span>
+            </div>
+            <button wire:click="$set('search', '')" class="text-lime-600 hover:text-lime-800">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Search Results Section -->
+        <div id="search-results" class="mb-8 scroll-mt-4">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-gradient-to-r from-lime-50 to-white">
+                    <h3 class="text-lg font-bold text-[#1e3a29]">Hasil Pencarian</h3>
+                    <p class="text-sm text-slate-600 mt-1">Ditemukan {{ $recentTransactions->count() }} transaksi yang cocok</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-50">
+                            <tr class="text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                <th class="px-6 py-4">Tanggal</th>
+                                <th class="px-6 py-4">Siswa</th>
+                                <th class="px-6 py-4">Produk</th>
+                                <th class="px-6 py-4">Tipe</th>
+                                <th class="px-6 py-4">Jumlah</th>
+                                <th class="px-6 py-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse($recentTransactions as $transaction)
+                            <tr class="hover:bg-lime-50 transition-colors bg-lime-50/30">
+                                <td class="px-6 py-4 text-sm text-slate-600">
+                                    {{ $transaction->created_at->format('d M Y') }}<br>
+                                    <span class="text-xs text-slate-400">{{ $transaction->created_at->format('H:i') }}</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-slate-800">{{ $transaction->user->name }}</div>
+                                    <div class="text-xs text-slate-500">{{ $transaction->user->student_id ?? '-' }}</div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-slate-600">
+                                    {{ $transaction->savingType->name }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    @if($transaction->type === 'deposit')
+                                        <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-sm font-bold inline-flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" /></svg>
+                                            Setoran
+                                        </span>
+                                    @else
+                                        <span class="px-3 py-1 bg-rose-100 text-rose-700 rounded-lg text-sm font-bold inline-flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" /></svg>
+                                            Penarikan
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="font-bold text-[#1e3a29]">Rp {{ number_format($transaction->amount, 0, ',', '.') }}</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @if($transaction->status === 'approved')
+                                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-bold">Disetujui</span>
+                                    @elseif($transaction->status === 'pending')
+                                        <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-lg text-sm font-bold">Pending</span>
+                                    @else
+                                        <span class="px-3 py-1 bg-red-100 text-red-700 rounded-lg text-sm font-bold">Ditolak</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                                    <div class="flex flex-col items-center gap-2">
+                                        <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                        <p class="font-medium">Tidak ada transaksi yang cocok dengan pencarian "{{ $search }}"</p>
+                                        <button wire:click="$set('search', '')" class="mt-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition-colors">
+                                            Hapus Filter
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <!-- Top Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
@@ -190,10 +400,10 @@
             <!-- List -->
             <div class="space-y-4">
                 @forelse($pendingTransactions as $transaction)
-                <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                <a href="{{ route('admin.transactions') }}?filter=pending" class="block bg-slate-50 rounded-xl p-4 border border-slate-100 hover:bg-slate-100 hover:border-slate-200 transition-all cursor-pointer group">
                     <div class="flex justify-between items-start mb-2">
                         <div>
-                            <div class="font-bold text-[#1e3a29] text-sm">{{ $transaction->user->name }}</div>
+                            <div class="font-bold text-[#1e3a29] text-sm group-hover:text-lime-600 transition-colors">{{ $transaction->user->name }}</div>
                             <div class="text-xs text-slate-500">{{ $transaction->savingType->name }}</div>
                         </div>
                         <span class="px-2 py-1 {{ $transaction->type === 'deposit' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700' }} rounded-lg text-xs font-bold">
@@ -204,7 +414,7 @@
                         <span class="font-bold text-[#1e3a29]">Rp {{ number_format($transaction->amount, 0, ',', '.') }}</span>
                         <span class="text-xs text-slate-400">{{ $transaction->created_at->diffForHumans() }}</span>
                     </div>
-                </div>
+                </a>
                 @empty
                 <div class="text-center py-8 text-slate-400 text-sm">
                     Tidak ada transaksi pending
@@ -215,6 +425,7 @@
     </div>
 
     <!-- Bottom Section: Transactions -->
+    @if(!$search)
     <div class="bg-white rounded-[1.5rem] p-8 shadow-sm border border-slate-100">
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-lg font-bold text-[#1e3a29]">Recent Transaction</h3>
@@ -277,4 +488,5 @@
             </table>
         </div>
     </div>
+    @endif
 </div>
