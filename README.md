@@ -164,8 +164,8 @@
 1. **Clone Repository**
 
 ```bash
-git clone https://github.com/ngipnu/tasia.git
-cd tasia
+git clone https://github.com/ngipnu/savings.git
+cd savings
 ```
 
 2. **Install Dependencies**
