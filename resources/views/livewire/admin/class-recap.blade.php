@@ -72,7 +72,7 @@
         </div>
         <div class="w-1/3">
             <p class="mb-16">Bogor, {{ now()->format('d F Y') }}<br>Wali Kelas</p>
-            <p class="font-medium text-slate-800">( ...................................... )</p>
+            <p class="font-medium text-slate-800">{{ $classRoom->teacher ? $classRoom->teacher->name : '( ...................................... )' }}</p>
         </div>
     </div>
 

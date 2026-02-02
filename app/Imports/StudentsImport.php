@@ -15,7 +15,7 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation
         return new User([
             'name' => $row['nama'],
             'email' => $row['email'],
-            'password' => Hash::make($row['password'] ?? 'password'),
+            'password' => Hash::make($row['password'] ?? '12345678'),
             'student_id' => $row['nis'],
             'class_room_id' => $row['class_room_id'] ?? null,
             'phone' => $row['no_hp'] ?? null,

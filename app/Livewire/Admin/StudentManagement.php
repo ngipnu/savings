@@ -149,6 +149,8 @@ class StudentManagement extends Component
 
         if ($this->password) {
             $data['password'] = Hash::make($this->password);
+        } else if (!$this->editMode) {
+            $data['password'] = Hash::make('12345678');
         }
 
         if ($this->editMode) {

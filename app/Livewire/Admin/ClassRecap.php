@@ -18,7 +18,7 @@ class ClassRecap extends Component
             abort(403, 'Unauthorized access to this class recap.');
         }
 
-        $this->classRoom = \App\Models\ClassRoom::findOrFail($id);
+        $this->classRoom = \App\Models\ClassRoom::with('teacher')->findOrFail($id);
 
         $this->students = \App\Models\User::where('class_room_id', $id)
             ->where('role', 'student')
