@@ -46,14 +46,18 @@
                             <div class="font-bold text-[#1e3a29] text-sm md:text-base">{{ $class->name }}</div>
                         </td>
                         <td class="px-3 py-3 md:px-6 md:py-4 hidden md:table-cell">
+                            @if($class->teacher)
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs">
-                                    {{ substr($class->user->name, 0, 1) }}
+                                    {{ substr($class->teacher->name, 0, 1) }}
                                 </div>
                                 <div class="text-xs md:text-sm font-medium text-slate-700">
-                                    {{ $class->user->name }}
+                                    {{ $class->teacher->name }}
                                 </div>
                             </div>
+                            @else
+                            <span class="text-xs text-slate-400 italic">Belum ada wali kelas</span>
+                            @endif
                         </td>
                         <td class="px-3 py-3 md:px-6 md:py-4">
                             <span class="px-2 py-1 md:px-3 md:py-1 bg-lime-100 text-[#1e3a29] rounded-lg text-xs md:text-sm font-bold">
