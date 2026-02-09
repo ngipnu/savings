@@ -249,8 +249,9 @@
             <form wire:submit="import" class="space-y-6">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-2">Pilih File Excel</label>
-                    <input wire:model="importFile" type="file" accept=".xlsx,.xls,.csv" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
-                    @error('importFile') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                    <input wire:model="import_file" type="file" accept=".xlsx,.xls,.csv" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+                    @error('import_file') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                    <div wire:loading wire:target="import_file" class="text-xs text-blue-600 mt-1">Mengupload file...</div>
                     <p class="text-xs text-slate-500 mt-2">Format: .xlsx (Disarankan), .xls, .csv (Max: 2MB)</p>
                 </div>
 
@@ -258,8 +259,13 @@
                     <button type="button" wire:click="closeImportModal" class="flex-1 px-4 py-2.5 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors font-medium">
                         Batal
                     </button>
-                    <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                        Import Data
+                    <button type="submit" 
+                        class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                        wire:loading.attr="disabled"
+                        wire:target="import_file, import">
+                        <span wire:loading.remove wire:target="import_file, import">Import Data</span>
+                        <span wire:loading wire:target="import_file">Mengupload...</span>
+                        <span wire:loading wire:target="import">Memproses...</span>
                     </button>
                 </div>
             </form>

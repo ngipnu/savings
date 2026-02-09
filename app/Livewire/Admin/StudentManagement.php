@@ -31,7 +31,7 @@ class StudentManagement extends Component
     public $parent_email;
     public $search = '';
     public $filterClass = '';
-    public $importFile;
+    public $import_file;
 
     protected function rules()
     {
@@ -97,13 +97,13 @@ class StudentManagement extends Component
     public function openImportModal()
     {
         $this->showImportModal = true;
-        $this->importFile = null;
+        $this->import_file = null;
     }
 
     public function closeImportModal()
     {
         $this->showImportModal = false;
-        $this->importFile = null;
+        $this->import_file = null;
     }
 
     public function resetForm()
@@ -168,11 +168,11 @@ class StudentManagement extends Component
     public function import()
     {
         $this->validate([
-            'importFile' => 'required|mimes:xlsx,xls,csv|max:2048',
+            'import_file' => 'required|mimes:xlsx,xls,csv|max:2048',
         ]);
 
         try {
-            Excel::import(new StudentsImport, $this->importFile->getRealPath());
+            Excel::import(new StudentsImport, $this->import_file->getRealPath());
             session()->flash('message', 'Data siswa berhasil diimport!');
             $this->closeImportModal();
         } catch (\Exception $e) {
