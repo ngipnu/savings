@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    </div>
+
 
     <!-- Bulk Action Bar -->
     @if(count($selectedStudents) > 0)
