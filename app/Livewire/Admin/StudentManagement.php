@@ -32,6 +32,9 @@ class StudentManagement extends Component
     public $search = '';
     public $filterClass = '';
     public $import_file;
+    public $selectedStudents = [];
+    public $bulkClassId;
+    public $showBulkAssignModal = false;
 
     protected function rules()
     {
@@ -46,6 +49,8 @@ class StudentManagement extends Component
             'parent_name' => 'nullable|string',
             'parent_phone' => 'nullable|string',
             'parent_email' => 'nullable|email',
+            'bulkClassId' => 'nullable|exists:class_rooms,id',
+            'selectedStudents' => 'nullable|array',
         ];
     }
 
@@ -104,6 +109,39 @@ class StudentManagement extends Component
     {
         $this->showImportModal = false;
         $this->import_file = null;
+    }
+
+    public function openBulkAssignModal()
+    {
+        if (empty($this->selectedStudents)) {
+            $this->dispatch('error', 'Pilih minimal satu siswa.');
+            return;
+        }
+        $this->bulkClassId = null;
+        $this->showBulkAssignModal = true;
+    }
+
+    public function closeBulkAssignModal()
+    {
+        $this->showBulkAssignModal = false;
+        $this->bulkClassId = null;
+    }
+
+    public function saveBulkAssign()
+    {
+        $this->validate([
+            'bulkClassId' => 'required|exists:class_rooms,id',
+            'selectedStudents' => 'required|array|min:1',
+        ]);
+
+        User::whereIn('id', $this->selectedStudents)->update([
+            'class_room_id' => $this->bulkClassId
+        ]);
+
+        session()->flash('message', count($this->selectedStudents) . ' siswa berhasil dimasukkan ke kelas.');
+        
+        $this->closeBulkAssignModal();
+        $this->selectedStudents = [];
     }
 
     public function resetForm()

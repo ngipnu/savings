@@ -45,12 +45,34 @@
         </div>
     </div>
 
+    </div>
+
+    <!-- Bulk Action Bar -->
+    @if(count($selectedStudents) > 0)
+    <div class="mb-4 p-4 bg-lime-50 border border-lime-200 rounded-xl flex items-center justify-between animate-fade-in-down">
+        <div class="flex items-center gap-3">
+            <span class="bg-lime-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">{{ count($selectedStudents) }}</span>
+            <span class="text-lime-800 font-medium text-sm">Siswa terpilih</span>
+        </div>
+        <button wire:click="openBulkAssignModal" class="px-4 py-2 bg-lime-600 text-white rounded-lg hover:bg-lime-700 transition-colors text-sm font-bold flex items-center gap-2 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+            Masukan ke Kelas
+        </button>
+    </div>
+    @endif
+
     <!-- Table -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-slate-50">
                     <tr class="text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-3 py-3 md:px-6 md:py-4 w-10">
+                            <input type="checkbox" class="rounded border-slate-300 text-lime-600 focus:ring-lime-500"
+                                @click="checked ? $wire.set('selectedStudents', @js($students->pluck('id')->map(fn($id) => (string)$id))) : $wire.set('selectedStudents', [])">
+                        </th>
                         <th class="px-3 py-3 md:px-6 md:py-4 hidden md:table-cell">NIS</th>
                         <th class="px-3 py-3 md:px-6 md:py-4">Nama</th>
                         <th class="px-3 py-3 md:px-6 md:py-4">Kelas</th>
@@ -62,6 +84,9 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse($students as $student)
                     <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-3 py-3 md:px-6 md:py-4">
+                            <input type="checkbox" wire:model.live="selectedStudents" value="{{ $student->id }}" class="rounded border-slate-300 text-lime-600 focus:ring-lime-500">
+                        </td>
                         <td class="px-3 py-3 md:px-6 md:py-4 hidden md:table-cell">
                             <span class="font-mono text-xs md:text-sm font-bold text-[#1e3a29]">{{ $student->student_id }}</span>
                         </td>
@@ -106,7 +131,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                        <td colspan="7" class="px-6 py-12 text-center text-slate-400">
                             Belum ada data siswa
                         </td>
                     </tr>
@@ -266,6 +291,40 @@
                         <span wire:loading.remove wire:target="import_file, import">Import Data</span>
                         <span wire:loading wire:target="import_file">Mengupload...</span>
                         <span wire:loading wire:target="import">Memproses...</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
+
+    <!-- Bulk Assign Modal -->
+    @if($showBulkAssignModal)
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 md:p-8 relative mt-10">
+            <h2 class="text-xl font-bold text-[#1e3a29] mb-4">Masukan Siswa ke Kelas</h2>
+            <p class="text-slate-500 mb-6 text-sm">
+                Anda akan memasukkan <span class="font-bold text-slate-800">{{ count($selectedStudents) }} siswa</span> terpilih ke dalam kelas yang sama.
+            </p>
+
+            <form wire:submit="saveBulkAssign" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Pilih Kelas</label>
+                    <select wire:model="bulkClassId" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+                        <option value="">-- Pilih Kelas --</option>
+                        @foreach($classes as $class)
+                            <option value="{{ $class->id }}">{{ $class->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('bulkClassId') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="button" wire:click="closeBulkAssignModal" class="flex-1 px-4 py-2.5 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors font-medium">
+                        Batal
+                    </button>
+                    <button type="submit" class="flex-1 px-4 py-2.5 bg-lime-600 text-white rounded-lg hover:bg-lime-700 transition-colors font-medium">
+                        Simpan
                     </button>
                 </div>
             </form>
