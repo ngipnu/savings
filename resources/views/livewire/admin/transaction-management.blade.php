@@ -273,7 +273,15 @@
             <h2 class="text-2xl font-bold text-[#1e3a29] mb-6">Import Data Transaksi dari Excel</h2>
 
             <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 class="font-bold text-blue-900 mb-2">Format Excel yang Diperlukan:</h4>
+                <div class="flex justify-between items-start mb-2">
+                    <h4 class="font-bold text-blue-900">Format Excel yang Diperlukan:</h4>
+                    <a href="{{ route('admin.template.transaction') }}" class="text-xs px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M12 9.75l-3 3m0 0l3 3m-3-3H21" />
+                        </svg>
+                        Download Template
+                    </a>
+                </div>
                 <ul class="text-sm text-blue-800 space-y-1">
                     <li>• <strong>nis</strong> - NIS siswa (wajib)</li>
                     <li>• <strong>jenis_tabungan</strong> - Nama produk tabungan (wajib)</li>
@@ -290,7 +298,7 @@
                     <label class="block text-sm font-medium text-slate-700 mb-2">Pilih File Excel</label>
                     <input wire:model="importFile" type="file" accept=".xlsx,.xls,.csv" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
                     @error('importFile') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
-                    <p class="text-xs text-slate-500 mt-2">Format: .xlsx, .xls, .csv (Max: 2MB)</p>
+                    <p class="text-xs text-slate-500 mt-2">Format: .xlsx (Disarankan), .xls, .csv (Max: 2MB)</p>
                 </div>
 
                 <div class="flex gap-3 pt-4">

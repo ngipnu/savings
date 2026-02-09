@@ -40,6 +40,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/reports', Reports::class)->name('reports');
         Route::get('/academic-years', AcademicYearManagement::class)->name('academic-years');
         Route::get('/students/{id}/print-account', \App\Livewire\Admin\AccountPrint::class)->name('student.print-account');
+        
+        // Template Routes
+        Route::get('/templates/student', [\App\Http\Controllers\Admin\TemplateController::class, 'downloadStudentTemplate'])->name('template.student');
+        Route::get('/templates/transaction', [\App\Http\Controllers\Admin\TemplateController::class, 'downloadTransactionTemplate'])->name('template.transaction');
     });
 
     // Operator Routes
