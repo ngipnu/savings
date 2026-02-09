@@ -35,6 +35,7 @@ class StudentManagement extends Component
     public $selectedStudents = [];
     public $bulkClassId;
     public $showBulkAssignModal = false;
+    public $perPage = 10;
 
     protected function rules()
     {
@@ -73,7 +74,7 @@ class StudentManagement extends Component
             ->when($user->role === 'wali_kelas', function($query) use ($user) {
                 $query->where('class_room_id', $user->teachingClass->id ?? 0);
             })
-            ->paginate(10);
+            ->paginate($this->perPage);
 
         if ($user->role === 'wali_kelas') {
             $classes = ClassRoom::where('id', $user->teachingClass->id ?? 0)->get();
@@ -142,6 +143,32 @@ class StudentManagement extends Component
         
         $this->closeBulkAssignModal();
         $this->selectedStudents = [];
+    }
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterClass()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function bulkPrint()
+    {
+        if (empty($this->selectedStudents)) {
+            $this->dispatch('error', 'Pilih minimal satu siswa.');
+            return;
+        }
+        
+        $ids = implode(',', $this->selectedStudents);
+        return redirect()->route('admin.student.bulk-print-account', ['ids' => $ids]);
     }
 
     public function resetForm()

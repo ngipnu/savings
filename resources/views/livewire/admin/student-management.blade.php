@@ -34,14 +34,29 @@
 
     <!-- Search & Filter -->
     <div class="mb-6 bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input wire:model.live="search" type="text" placeholder="Cari nama, NIS, atau email..." class="px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
-            <select wire:model.live="filterClass" class="px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
-                <option value="">Semua Kelas</option>
-                @foreach($classes as $class)
-                    <option value="{{ $class->id }}">{{ $class->name }}</option>
-                @endforeach
-            </select>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div class="md:col-span-5">
+                <input wire:model.live.debounce.500ms="search" type="text" placeholder="Cari nama, NIS, atau email..." class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+            </div>
+            
+            <div class="md:col-span-4">
+                <select wire:model.live="filterClass" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+                    <option value="">Semua Kelas</option>
+                    @foreach($classes as $class)
+                        <option value="{{ $class->id }}">{{ $class->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="md:col-span-3">
+                <select wire:model.live="perPage" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+                <option value="10">10 Data</option>
+                <option value="25">25 Data</option>
+                <option value="50">50 Data</option>
+                <option value="75">75 Data</option>
+                <option value="100">100 Data</option>
+                </select>
+            </div>
         </div>
     </div>
 
@@ -59,6 +74,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
             </svg>
             Masukan ke Kelas
+        </button>
+        <button wire:click="bulkPrint" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-bold flex items-center gap-2 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.618 0-1.11-.512-1.12-1.125L6.34 18m11.32 0h-11.32m1.12-12h9.44c1.18 0 2.164.91 2.201 2.09.037.332.052.668.052 1.01s-.015.678-.052 1.01c-.037 1.18-.91 2.164-2.09 2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+            </svg>
+            Cetak Akun
         </button>
     </div>
     @endif
