@@ -35,6 +35,7 @@ class StudentManagement extends Component
     public $selectedStudents = [];
     public $bulkClassId;
     public $showBulkAssignModal = false;
+    public $sortBy = 'created_at_desc';
     public $perPage = 10;
 
     protected function rules()
@@ -73,6 +74,20 @@ class StudentManagement extends Component
             })
             ->when($user->role === 'wali_kelas', function($query) use ($user) {
                 $query->where('class_room_id', $user->teachingClass->id ?? 0);
+            })
+            ->when($this->sortBy === 'no_class', function($query) {
+                $query->orderByRaw('class_room_id IS NULL DESC')->orderBy('created_at', 'desc');
+            }, function($query) {
+                if ($this->sortBy === 'name_asc') {
+                    $query->orderBy('name', 'asc');
+                } elseif ($this->sortBy === 'name_desc') {
+                    $query->orderBy('name', 'desc');
+                } elseif ($this->sortBy === 'created_at_asc') {
+                    $query->orderBy('created_at', 'asc');
+                } else {
+                    // Default: created_at desc (newest first)
+                    $query->orderBy('created_at', 'desc');
+                }
             })
             ->paginate($this->perPage);
 
@@ -156,6 +171,11 @@ class StudentManagement extends Component
     }
 
     public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSortBy()
     {
         $this->resetPage();
     }

@@ -35,20 +35,30 @@
     <!-- Search & Filter -->
     <div class="mb-6 bg-white rounded-xl p-6 shadow-sm border border-slate-100">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-            <div class="md:col-span-5">
+            <div class="md:col-span-4">
                 <input wire:model.live.debounce.500ms="search" type="text" placeholder="Cari nama, NIS, atau email..." class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
             </div>
             
-            <div class="md:col-span-4">
+            <div class="md:col-span-3">
                 <select wire:model.live="filterClass" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
                     <option value="">Semua Kelas</option>
                     @foreach($classes as $class)
-                        <option value="{{ $class->id }}">{{ $class->name }}</option>
+                        <option value="{{ $class->id }}">{{ $class->name }} (ID: {{ $class->id }})</option>
                     @endforeach
                 </select>
             </div>
 
             <div class="md:col-span-3">
+                 <select wire:model.live="sortBy" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+                    <option value="created_at_desc">Terbaru</option>
+                    <option value="created_at_asc">Terlama</option>
+                    <option value="name_asc">Nama (A-Z)</option>
+                    <option value="name_desc">Nama (Z-A)</option>
+                    <option value="no_class">Belum Masuk Kelas (Prioritas)</option>
+                </select>
+            </div>
+
+            <div class="md:col-span-2">
                 <select wire:model.live="perPage" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
                 <option value="10">10 Data</option>
                 <option value="25">25 Data</option>
@@ -290,6 +300,28 @@
                     <li>• <strong>no_hp_orang_tua</strong> - No HP orang tua (opsional)</li>
                     <li>• <strong>email_orang_tua</strong> - Email orang tua (opsional)</li>
                 </ul>
+                
+                <div class="mt-4 pt-4 border-t border-blue-200">
+                    <p class="text-sm font-bold text-blue-900 mb-2">Referensi ID Kelas (Gunakan ID ini di Excel):</p>
+                    <div class="max-h-40 overflow-y-auto bg-white rounded-lg border border-blue-200 shadow-sm">
+                        <table class="w-full text-xs md:text-sm text-left">
+                            <thead class="bg-blue-100 text-blue-800 sticky top-0 font-bold">
+                                <tr>
+                                    <th class="px-3 py-2 w-16 text-center">ID</th>
+                                    <th class="px-3 py-2">Nama Kelas</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-blue-100 text-slate-700">
+                                @foreach($classes as $c)
+                                <tr class="hover:bg-blue-50">
+                                    <td class="px-3 py-1.5 text-center font-mono font-bold">{{ $c->id }}</td>
+                                    <td class="px-3 py-1.5">{{ $c->name }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <form wire:submit="import" class="space-y-6">
