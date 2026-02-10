@@ -14,8 +14,8 @@ class TemplateController extends Controller
         return Excel::download(new StudentTemplateExport, 'template_import_siswa.xlsx');
     }
 
-    public function downloadTransactionTemplate()
+    public function downloadTransactionTemplate(\Illuminate\Http\Request $request)
     {
-        return Excel::download(new TransactionTemplateExport, 'template_import_transaksi.xlsx');
+        return Excel::download(new TransactionTemplateExport($request->query('class_id')), 'template_import_transaksi.xlsx');
     }
 }

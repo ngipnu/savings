@@ -63,11 +63,13 @@ class TransactionManagement extends Component
 
         $students = User::where('role', 'student')->get();
         $savingTypes = SavingType::all();
+        $classes = \App\Models\ClassRoom::all();
 
         return view('livewire.admin.transaction-management', [
             'transactions' => $transactions,
             'students' => $students,
             'savingTypes' => $savingTypes,
+            'classes' => $classes,
         ])->layout('components.layouts.admin', ['title' => 'Manajemen Transaksi']);
     }
 

@@ -272,16 +272,29 @@
         <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 md:p-8 relative">
             <h2 class="text-2xl font-bold text-[#1e3a29] mb-6">Import Data Transaksi dari Excel</h2>
 
-            <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <div class="flex justify-between items-start mb-2">
-                    <h4 class="font-bold text-blue-900">Format Excel yang Diperlukan:</h4>
-                    <a href="{{ route('admin.template.transaction') }}" class="text-xs px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M12 9.75l-3 3m0 0l3 3m-3-3H21" />
-                        </svg>
-                        Download Template
-                    </a>
+            <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg" x-data="{ classId: '' }">
+                <div class="flex flex-col gap-4 mb-4">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-blue-900">Download Template Berdasar Kelas:</h4>
+                    </div>
+                    <div class="flex gap-2">
+                        <select x-model="classId" class="flex-1 px-3 py-2 border border-blue-200 rounded-lg text-sm text-slate-700 bg-white focus:ring-2 focus:ring-blue-400 outline-none">
+                            <option value="">-- Pilih Kelas (Opsional) --</option>
+                            @foreach($classes as $class)
+                                <option value="{{ $class->id }}">{{ $class->name }}</option>
+                            @endforeach
+                        </select>
+                        <a :href="'{{ route('admin.template.transaction') }}?class_id=' + classId" target="_blank" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-bold shadow-sm whitespace-nowrap">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M12 9.75l-3 3m0 0l3 3m-3-3H21" />
+                            </svg>
+                            Download Template
+                        </a>
+                    </div>
+                    <p class="text-xs text-blue-700 italic">* Jika kelas dipilih, template akan berisi daftar siswa dari kelas tersebut.</p>
                 </div>
+                
+                <h4 class="font-bold text-blue-900 mb-2 pt-4 border-t border-blue-200">Format Kolom Excel:</h4>
                 <ul class="text-sm text-blue-800 space-y-1">
                     <li>• <strong>nis</strong> - NIS siswa (wajib)</li>
                     <li>• <strong>jenis_tabungan</strong> - Nama produk tabungan (wajib)</li>
