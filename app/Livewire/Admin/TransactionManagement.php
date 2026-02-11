@@ -10,6 +10,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Maatwebsite\Excel\Facades\Excel;
+use Livewire\Attributes\Computed;
 
 class TransactionManagement extends Component
 {
@@ -17,6 +18,7 @@ class TransactionManagement extends Component
 
     public $showModal = false;
     public $showImportModal = false;
+    public $showRecapModal = false;
     public $editMode = false;
     public $importFile;
     public $transactionId;
@@ -32,6 +34,12 @@ class TransactionManagement extends Component
     public $studentSearch = '';
     public $filterType = '';
     public $filterStatus = '';
+    public $filterClass = '';
+    public $filterSavingType = '';
+    public $startDate = '';
+    public $endDate = '';
+    public $recapDate;
+    public $expandedClass = null;
 
     protected $rules = [
         'user_id' => 'required|exists:users,id',
@@ -45,11 +53,14 @@ class TransactionManagement extends Component
 
     public function render()
     {
-        $transactions = Transaction::with(['user', 'savingType'])
+        $transactions = Transaction::with(['user.classRoom', 'savingType'])
             ->when($this->search, function($query) {
                 $query->whereHas('user', function($q) {
                     $q->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('student_id', 'like', '%' . $this->search . '%');
+                      ->orWhere('student_id', 'like', '%' . $this->search . '%')
+                      ->orWhereHas('classRoom', function($sq) {
+                          $sq->where('name', 'like', '%' . $this->search . '%');
+                      });
                 });
             })
             ->when($this->filterType, function($query) {
@@ -57,6 +68,20 @@ class TransactionManagement extends Component
             })
             ->when($this->filterStatus, function($query) {
                 $query->where('status', $this->filterStatus);
+            })
+            ->when($this->filterClass, function($query) {
+                $query->whereHas('user', function($q) {
+                    $q->where('class_room_id', $this->filterClass);
+                });
+            })
+            ->when($this->filterSavingType, function($query) {
+                $query->where('saving_type_id', $this->filterSavingType);
+            })
+            ->when($this->startDate, function($query) {
+                $query->whereDate('date', '>=', $this->startDate);
+            })
+            ->when($this->endDate, function($query) {
+                $query->whereDate('date', '<=', $this->endDate);
             })
             ->latest()
             ->paginate(15);
@@ -71,6 +96,60 @@ class TransactionManagement extends Component
             'savingTypes' => $savingTypes,
             'classes' => $classes,
         ])->layout('components.layouts.admin', ['title' => 'Manajemen Transaksi']);
+    }
+
+    #[Computed]
+    public function dailyRecap()
+    {
+        $date = $this->recapDate ?: now()->format('Y-m-d');
+        
+        $transactions = Transaction::with(['user.classRoom'])
+            ->whereDate('date', $date)
+            ->where('status', 'approved')
+            ->get();
+
+        return $transactions->groupBy(function($t) {
+            return $t->user->classRoom ? $t->user->classRoom->name : 'Tanpa Kelas';
+        })->map(function($group, $className) {
+            $students = $group->groupBy('user_id')->map(function($studentTransactions) {
+                $user = $studentTransactions->first()->user;
+                return [
+                    'name' => $user->name,
+                    'student_id' => $user->student_id,
+                    'deposit' => $studentTransactions->where('type', 'deposit')->sum('amount'),
+                    'withdrawal' => $studentTransactions->where('type', 'withdrawal')->sum('amount'),
+                ];
+            });
+
+            return [
+                'name' => $className,
+                'students' => $students,
+                'total_deposit' => $students->sum('deposit'),
+                'total_withdrawal' => $students->sum('withdrawal'),
+                'net' => $students->sum('deposit') - $students->sum('withdrawal')
+            ];
+        });
+    }
+
+    public function openRecapModal()
+    {
+        $this->recapDate = now()->format('Y-m-d');
+        $this->showRecapModal = true;
+    }
+
+    public function closeRecapModal()
+    {
+        $this->showRecapModal = false;
+        $this->expandedClass = null;
+    }
+
+    public function toggleClassDetail($className)
+    {
+        if ($this->expandedClass === $className) {
+            $this->expandedClass = null;
+        } else {
+            $this->expandedClass = $className;
+        }
     }
 
     public function openModal()
@@ -99,6 +178,12 @@ class TransactionManagement extends Component
         $this->studentSearch = ''; 
         $this->dispatch('transaction-saved');
         $this->resetErrorBag();
+    }
+
+    public function resetFilters()
+    {
+        $this->reset(['search', 'filterType', 'filterStatus', 'filterClass', 'filterSavingType', 'startDate', 'endDate']);
+        $this->resetPage();
     }
 
     public function save()
