@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/students', StudentManagement::class)->name('students');
         Route::get('/managers', ManagerAccounts::class)->name('managers');
         Route::get('/transactions', TransactionManagement::class)->name('transactions');
+        Route::get('/transactions/daily-recap', \App\Livewire\Admin\DailyRecap::class)->name('transactions.daily-recap');
         Route::get('/transactions/{id}/receipt', \App\Livewire\Admin\TransactionReceipt::class)->name('transaction.receipt');
         Route::get('/classes/{id}/recap', \App\Livewire\Admin\ClassRecap::class)->name('class.recap');
         Route::get('/products', ProductManagement::class)->name('products');

@@ -15,18 +15,10 @@
                     </span>
                 </button>
             @endif
-            <button wire:click="openImportModal" class="px-4 py-3 md:px-6 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-900/20">
-                <span class="flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
-                    <span class="hidden md:inline">Import Excel</span>
-                </span>
-            </button>
-            <button wire:click="openRecapModal" class="px-4 py-3 md:px-6 bg-amber-500 text-white rounded-xl font-semibold hover:bg-amber-600 transition-all shadow-lg shadow-amber-900/20">
-                <span class="flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m3.243-4.243a4 4 0 015.657 0m0 0a4 4 0 010 5.657m0 0a4 4 0 01-5.657 0" /></svg>
-                    <span class="hidden md:inline">Rekap Harian</span>
-                </span>
-            </button>
+            <a href="{{ route('admin.transactions.daily-recap') }}" class="px-4 py-3 md:px-6 bg-amber-500 text-white rounded-xl font-semibold hover:bg-amber-600 transition-all shadow-lg shadow-amber-900/20 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m3.243-4.243a4 4 0 015.657 0m0 0a4 4 0 010 5.657m0 0a4 4 0 01-5.657 0" /></svg>
+                <span class="hidden md:inline">Rekap Harian</span>
+            </a>
             <button wire:click="openModal" class="px-4 py-3 md:px-6 bg-[#1e3a29] text-white rounded-xl font-semibold hover:bg-[#2a4d38] transition-all shadow-lg shadow-emerald-900/20">
                 <span class="flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
@@ -389,101 +381,6 @@
     </div>
     @endif
 
-    <!-- Recap Modal -->
-    @if($showRecapModal)
-    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full p-6 md:p-8 my-8 relative">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-[#1e3a29]">Rekap Harian Per Kelas</h2>
-                <button wire:click="closeRecapModal" class="text-slate-400 hover:text-slate-600">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
-            </div>
-
-            <div class="mb-6 flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <label class="text-sm font-semibold text-slate-600">Pilih Tanggal:</label>
-                <input wire:model.live="recapDate" type="date" class="px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 outline-none text-sm">
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full border-collapse border border-slate-100">
-                    <thead>
-                        <tr class="bg-slate-50 text-slate-500 text-xs uppercase font-bold tracking-wider">
-                            <th class="px-6 py-4 text-left border-b">Nama Kelas</th>
-                            <th class="px-6 py-4 text-right border-b">Total Setoran</th>
-                            <th class="px-6 py-4 text-right border-b">Total Penarikan</th>
-                            <th class="px-6 py-4 text-right border-b">Neto (Selisih)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        @php $grandTotalNet = 0; @endphp
-                        @forelse($this->dailyRecap as $recap)
-                        <tr class="bg-slate-50/80">
-                            <td class="px-6 py-3 font-bold text-[#1e3a29] border-b border-t border-slate-200 text-sm">
-                                <div class="flex items-center gap-3">
-                                    <span>KELAS: {{ $recap['name'] }}</span>
-                                    <button wire:click="toggleClassDetail('{{ $recap['name'] }}')" class="px-2 py-1 bg-white border border-slate-200 rounded text-[10px] text-slate-500 hover:bg-slate-50 transition-colors uppercase font-bold tracking-wider shadow-sm flex items-center gap-1">
-                                        @if($expandedClass === $recap['name'])
-                                            <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" /></svg>
-                                            Sembunyikan Siswa
-                                        @else
-                                            <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-                                            Detail Siswa
-                                        @endif
-                                    </button>
-                                </div>
-                            </td>
-                            <td class="px-6 py-3 text-right text-emerald-700 font-bold border-b border-t border-slate-200 text-sm">Rp {{ number_format($recap['total_deposit'], 0, ',', '.') }}</td>
-                            <td class="px-6 py-3 text-right text-rose-700 font-bold border-b border-t border-slate-200 text-sm">Rp {{ number_format($recap['total_withdrawal'], 0, ',', '.') }}</td>
-                            <td class="px-6 py-3 text-right text-[#1e3a29] font-black border-b border-t border-slate-200 text-sm italic">
-                                Rp {{ number_format($recap['net'], 0, ',', '.') }}
-                            </td>
-                        </tr>
-
-                        @if($expandedClass === $recap['name'])
-                            @foreach($recap['students'] as $student)
-                            <tr class="bg-white border-l-4 border-l-lime-400">
-                                <td class="px-10 py-3 text-slate-700">
-                                    <div class="font-medium text-sm">{{ $student['name'] }}</div>
-                                    <div class="text-[10px] text-slate-400">{{ $student['student_id'] }}</div>
-                                </td>
-                                <td class="px-6 py-3 text-right text-emerald-600 text-sm">Rp {{ number_format($student['deposit'], 0, ',', '.') }}</td>
-                                <td class="px-6 py-3 text-right text-rose-600 text-sm">Rp {{ number_format($student['withdrawal'], 0, ',', '.') }}</td>
-                                <td class="px-6 py-3 text-right text-slate-400 text-xs italic">- s/d hari ini -</td>
-                            </tr>
-                            @endforeach
-                        @endif
-
-                        @php $grandTotalNet += $recap['net']; @endphp
-                        @empty
-                        <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-slate-400">Tidak ada data untuk tanggal ini</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                    @if(count($this->dailyRecap) > 0)
-                    <tfoot class="bg-slate-50 font-bold">
-                        <tr>
-                            <td class="px-6 py-4 text-slate-800">TOTAL SELURUH</td>
-                            <td class="px-6 py-4 text-right text-emerald-700">Rp {{ number_format($this->dailyRecap->sum('total_deposit'), 0, ',', '.') }}</td>
-                            <td class="px-6 py-4 text-right text-rose-700">Rp {{ number_format($this->dailyRecap->sum('total_withdrawal'), 0, ',', '.') }}</td>
-                            <td class="px-6 py-4 text-right text-[#1e3a29]">Rp {{ number_format($grandTotalNet, 0, ',', '.') }}</td>
-                        </tr>
-                    </tfoot>
-                    @endif
-                </table>
-            </div>
-
-            <div class="mt-8 flex justify-end gap-3 print:hidden">
-                <button onclick="window.print()" class="px-6 py-2.5 bg-[#1e3a29] text-white rounded-lg font-bold hover:bg-[#2a4d38] transition-colors shadow-lg flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 012-2H9a2 2 0 01-2 2v4h10z" /></svg>
-                    Cetak Rekap
-                </button>
-                <button wire:click="closeRecapModal" class="px-6 py-2.5 bg-slate-100 text-slate-600 rounded-lg font-bold hover:bg-slate-200 transition-colors">
-                    Tutup
-                </button>
-            </div>
-        </div>
-    </div>
     @endif
+</div>
 </div>
