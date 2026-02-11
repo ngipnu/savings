@@ -33,17 +33,69 @@
 
     </div>
 
-    @if (session()->has('message'))
-        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl">
-            {{ session('message') }}
-        </div>
-    @endif
-
-    @if (session()->has('error'))
-        <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl">
-            {{ session('error') }}
-        </div>
-    @endif
+    <!-- Floating Notifications -->
+    <div class="fixed top-6 right-6 z-[100] flex flex-col gap-3 min-w-[320px] max-w-md">
+        @if (session()->has('message'))
+            <div x-data="{ show: true }" 
+                 x-show="show" 
+                 x-init="setTimeout(() => show = false, 5000)"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="translate-x-full opacity-0"
+                 x-transition:enter-end="translate-x-0 opacity-100"
+                 x-transition:leave="transition ease-in duration-300"
+                 x-transition:leave-start="translate-x-0 opacity-100"
+                 x-transition:leave-end="translate-x-full opacity-0"
+                 class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl shadow-xl shadow-emerald-900/10 flex items-start gap-3 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent"></div>
+                <div class="p-2 bg-emerald-500 text-white rounded-lg shrink-0 relative z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                </div>
+                <div class="flex-1 relative z-10">
+                    <p class="font-bold text-sm">Berhasil!</p>
+                    <p class="text-xs opacity-90">{{ session('message') }}</p>
+                </div>
+                <button @click="show = false" class="text-emerald-400 hover:text-emerald-600 transition-colors relative z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <div class="absolute bottom-0 left-0 h-1 bg-emerald-500/20 w-full">
+                    <div class="h-full bg-emerald-500 transition-all duration-[5000ms] ease-linear" x-init="$el.style.width = '0%'"></div>
+                </div>
+            </div>
+        @endif
+    
+        @if (session()->has('error'))
+            <div x-data="{ show: true }" 
+                 x-show="show" 
+                 x-init="setTimeout(() => show = false, 8000)"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="translate-x-full opacity-0"
+                 x-transition:enter-end="translate-x-0 opacity-100"
+                 x-transition:leave="transition ease-in duration-300"
+                 x-transition:leave-start="translate-x-0 opacity-100"
+                 x-transition:leave-end="translate-x-full opacity-0"
+                 class="p-4 bg-red-50 border border-red-200 text-red-800 rounded-2xl shadow-xl shadow-red-900/10 flex items-start gap-3 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-r from-red-500/5 to-transparent"></div>
+                <div class="p-2 bg-red-500 text-white rounded-lg shrink-0 relative z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                    </svg>
+                </div>
+                <div class="flex-1 relative z-10">
+                    <p class="font-bold text-sm">Terjadi Kesalahan</p>
+                    <p class="text-xs opacity-90">{{ session('error') }}</p>
+                </div>
+                <button @click="show = false" class="text-red-400 hover:text-red-600 transition-colors relative z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        @endif
+    </div>
 
     <!-- Search & Filter -->
     <div class="mb-6 bg-white rounded-xl p-6 shadow-sm border border-slate-100">
@@ -365,9 +417,27 @@
             </div>
 
             <form wire:submit="import" class="space-y-6">
-                <div>
+                <div 
+                    x-data="{ isUploading: false, progress: 0 }"
+                    x-on:livewire-upload-start="isUploading = true"
+                    x-on:livewire-upload-finish="isUploading = false"
+                    x-on:livewire-upload-error="isUploading = false"
+                    x-on:livewire-upload-progress="progress = $event.detail.progress"
+                >
                     <label class="block text-sm font-medium text-slate-700 mb-2">Pilih File Excel</label>
-                    <input wire:model="importFile" type="file" accept=".xlsx,.xls,.csv" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+                    <input wire:model="importFile" type="file" id="importFile" wire:key="import-file-input" accept=".xlsx,.xls,.csv" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+                    
+                    <!-- Progress Bar -->
+                    <div x-show="isUploading" class="mt-2 text-xs">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-blue-600 font-semibold italic">Sedang mengunggah...</span>
+                            <span x-text="progress + '%'" class="text-blue-600 font-semibold"></span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-1.5">
+                            <div class="bg-blue-600 h-1.5 rounded-full transition-all duration-300" :style="'width: ' + progress + '%'"></div>
+                        </div>
+                    </div>
+
                     @error('importFile') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                     <p class="text-xs text-slate-500 mt-2">Format: .xlsx (Disarankan), .xls, .csv (Max: 2MB)</p>
                 </div>
@@ -376,8 +446,15 @@
                     <button type="button" wire:click="closeImportModal" class="flex-1 px-4 py-2.5 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors font-medium">
                         Batal
                     </button>
-                    <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                        Import Data
+                    <button type="submit" wire:loading.attr="disabled" wire:target="importFile, import" class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                        <span wire:loading.remove wire:target="import">Import Data</span>
+                        <span wire:loading wire:target="import">
+                            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Memproses...
+                        </span>
                     </button>
                 </div>
             </form>

@@ -49,6 +49,16 @@ class TransactionManagement extends Component
         'status' => 'required|in:pending,approved,rejected',
     ];
 
+    protected $validationAttributes = [
+        'importFile' => 'file import',
+        'user_id' => 'siswa',
+        'saving_type_id' => 'produk tabungan',
+        'type' => 'tipe',
+        'amount' => 'jumlah',
+        'date' => 'tanggal',
+        'status' => 'status',
+    ];
+
     public function render()
     {
         $transactions = Transaction::with(['user.classRoom', 'savingType'])
