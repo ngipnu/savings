@@ -11,11 +11,15 @@ class DailyRecap extends Component
 {
     public $startDate;
     public $endDate;
+    public $classId;
+    public $classes;
 
     public function mount()
     {
         $this->startDate = now()->subDays(6)->format('Y-m-d');
         $this->endDate = now()->format('Y-m-d');
+        $this->classId = request('class_id');
+        $this->classes = ClassRoom::all();
     }
 
     #[Computed]
@@ -35,6 +39,11 @@ class DailyRecap extends Component
         $transactions = Transaction::with(['user.classRoom'])
             ->whereBetween('date', [$start, $end])
             ->where('status', 'approved')
+            ->when($this->classId, function($query) {
+                $query->whereHas('user', function($q) {
+                    $q->where('class_room_id', $this->classId);
+                });
+            })
             ->get();
 
         $grouped = $transactions->groupBy(function($t) {

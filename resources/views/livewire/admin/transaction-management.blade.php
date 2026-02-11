@@ -15,6 +15,10 @@
                     </span>
                 </button>
             @endif
+            <button wire:click="openImportModal" class="px-4 py-3 md:px-6 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-900/20 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                <span class="hidden md:inline">Import Excel</span>
+            </button>
             <a href="{{ route('admin.transactions.daily-recap') }}" class="px-4 py-3 md:px-6 bg-amber-500 text-white rounded-xl font-semibold hover:bg-amber-600 transition-all shadow-lg shadow-amber-900/20 flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m3.243-4.243a4 4 0 015.657 0m0 0a4 4 0 010 5.657m0 0a4 4 0 01-5.657 0" /></svg>
                 <span class="hidden md:inline">Rekap Harian</span>
