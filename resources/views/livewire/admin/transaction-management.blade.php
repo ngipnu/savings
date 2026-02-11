@@ -171,6 +171,9 @@
             <table class="w-full">
                 <thead class="bg-slate-50">
                     <tr class="text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-3 py-3 md:px-6 md:py-4">
+                            <input type="checkbox" wire:model.live="selectAllPage" class="rounded border-slate-300 text-lime-600 focus:ring-lime-500">
+                        </th>
                         <th class="px-3 py-3 md:px-6 md:py-4 hidden md:table-cell">Tanggal</th>
                         <th class="px-3 py-3 md:px-6 md:py-4">Siswa</th>
                         <th class="px-3 py-3 md:px-6 md:py-4 hidden md:table-cell">Kelas</th>
@@ -183,7 +186,10 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($transactions as $transaction)
-                    <tr class="hover:bg-slate-50 transition-colors">
+                    <tr class="hover:bg-slate-50 transition-colors {{ in_array($transaction->id, $selectedTransactions) ? 'bg-lime-50/50' : '' }}">
+                        <td class="px-3 py-3 md:px-6 md:py-4">
+                            <input type="checkbox" wire:model.live="selectedTransactions" value="{{ $transaction->id }}" class="rounded border-slate-300 text-lime-600 focus:ring-lime-500">
+                        </td>
                         <td class="px-3 py-3 md:px-6 md:py-4 text-xs md:text-sm text-slate-600 hidden md:table-cell">
                             {{ \Carbon\Carbon::parse($transaction->date)->format('d M Y') }}
                         </td>
@@ -258,7 +264,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="px-6 py-12 text-center text-slate-400">
+                        <td colspan="9" class="px-6 py-12 text-center text-slate-400">
                             Belum ada transaksi
                         </td>
                     </tr>
@@ -271,6 +277,37 @@
             {{ $transactions->links() }}
         </div>
     </div>
+
+    <!-- Calculator Summary Bar -->
+    @if($this->selectionSummary)
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-full max-w-2xl px-4"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="translate-y-full opacity-0"
+         x-transition:enter-end="translate-y-0 opacity-100">
+        <div class="bg-slate-900 text-white rounded-2xl shadow-2xl p-4 md:p-6 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-6">
+                <div class="flex flex-col text-center md:text-left">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Siswa Dipilih</span>
+                    <span class="text-xl font-bold text-lime-400">{{ $this->selectionSummary['student_count'] }} <span class="text-xs font-normal text-slate-400 ml-1">Siswa</span></span>
+                </div>
+                <div class="w-px h-8 bg-slate-700 hidden md:block"></div>
+                <div class="flex flex-col text-center md:text-left font-mono">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Saldo Siswa</span>
+                    <span class="text-xl font-bold">Rp {{ number_format($this->selectionSummary['total_students_balance'], 0, ',', '.') }}</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <div class="flex flex-col items-end mr-2 md:mr-4">
+                    <span class="text-[10px] text-slate-400 font-medium">{{ $this->selectionSummary['transaction_count'] }} Transaksi</span>
+                </div>
+                <button wire:click="clearSelection" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-sm font-bold transition-all border border-slate-700">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- Modal -->
     @if($showModal)
