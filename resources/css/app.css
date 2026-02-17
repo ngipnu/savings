@@ -1,3 +1,69 @@
-/* Custom CSS - Tailwind loaded via CDN in layout */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
-/* Add your custom styles here */
+/* Custom CSS - Tailwind loaded via Vite */
+
+html {
+    font-size: 14px; /* Default was 16px, making it smaller */
+}
+
+body {
+    color: #1f2937;
+    background-color: #f9fafb;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Make containers more spacious (wider) by default */
+.max-w-7xl {
+    max-width: 95% !important;
+}
+
+/* Reduce vertical padding for a tighter, 'lighter' feel */
+.py-12 {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+}
+
+.py-6 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+
+/* Adjust heading sizes to match the smaller base */
+h1 { font-size: 1.5rem; line-height: 2rem; font-weight: 700; }
+h2 { font-size: 1.25rem; line-height: 1.75rem; font-weight: 600; }
+h3 { font-size: 1.125rem; line-height: 1.75rem; font-weight: 500; }
+
+/* Custom utility for extra spaciousness */
+.wide-container {
+    max-width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+@media (min-width: 640px) {
+    .wide-container {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+@media (min-width: 1024px) {
+    .wide-container {
+        padding-left: 2.5rem;
+        padding-right: 2.5rem;
+    }
+}
+
+/* Compact tables */
+table {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+th, td {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}

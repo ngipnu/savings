@@ -65,9 +65,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 3. Create Saving Types
-        $wajib = SavingType::firstOrCreate(['name' => 'Tabungan Wajib'], ['description' => 'Tabungan wajib bulanan', 'min_amount' => 50000]);
-        $sukarela = SavingType::firstOrCreate(['name' => 'Tabungan Sukarela'], ['description' => 'Tabungan bebas nominal', 'min_amount' => 5000]);
-        $tour = SavingType::firstOrCreate(['name' => 'Tabungan Study Tour'], ['description' => 'Khusus kelas XI', 'min_amount' => 100000]);
+        $wajib = SavingType::firstOrCreate(['name' => 'Tabungan Wajib'], ['description' => 'Tabungan wajib bulanan', 'minimum_deposit' => 50000]);
+        $sukarela = SavingType::firstOrCreate(['name' => 'Tabungan Sukarela'], ['description' => 'Tabungan bebas nominal', 'minimum_deposit' => 5000]);
+        $tour = SavingType::firstOrCreate(['name' => 'Tabungan Study Tour'], ['description' => 'Khusus kelas XI', 'minimum_deposit' => 100000]);
 
         // 4. Create Transactions (Use updateOrCreate for idempotency)
         // Deposit

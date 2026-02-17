@@ -9,15 +9,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('class_room_id')->nullable()->after('class_name')->constrained()->nullOnDelete();
+            if (!Schema::hasColumn('users', 'class_room_id')) {
+                $table->foreignId('class_room_id')->nullable()->after('class_name')->constrained()->nullOnDelete();
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['class_room_id']);
-            $table->dropColumn('class_room_id');
+            if (Schema::hasColumn('users', 'class_room_id')) {
+                $table->dropForeign(['class_room_id']);
+                $table->dropColumn('class_room_id');
+            }
         });
     }
 };

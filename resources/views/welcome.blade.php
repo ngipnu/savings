@@ -24,6 +24,7 @@
         }
     </script>
     <style>
+        html { font-size: 14px; }
         body { font-family: 'Outfit', sans-serif; }
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
@@ -50,7 +51,7 @@
         <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#1e3a29] rounded-full blur-3xl opacity-10 translate-y-1/2 -translate-x-1/2"></div>
 
     <!-- Navbar -->
-    <nav class="relative z-10 container mx-auto px-6 py-6 flex justify-between items-center">
+    <nav class="relative z-10 mx-auto px-6 py-4 flex justify-between items-center max-w-[95%]">
         <div class="flex items-center gap-3">
             <img src="{{ asset('logo_round.png') }}" alt="TASIA Logo" class="w-12 h-12 rounded-xl shadow-lg object-cover">
             <span class="text-2xl font-bold text-[#1e3a29]">Tabungan Siswa An Nadzir</span>
@@ -63,17 +64,17 @@
     </nav>
 
     <!-- Hero Section -->
-    <main class="relative z-10 container mx-auto px-6 pt-10 pb-20 flex flex-col lg:flex-row items-center gap-16">
+    <main class="relative z-10 mx-auto px-6 pt-6 pb-12 flex flex-col lg:flex-row items-center gap-10 max-w-[95%]">
         <!-- Text Content -->
         <div class="flex-1 text-center lg:text-left">
             <div class="inline-block px-4 py-1.5 bg-lime-400/20 border border-lime-400 rounded-full text-[#1e3a29] font-semibold text-sm mb-6 shadow-sm">
                 👋 Selamat Datang di Platform Tabungan Sekolah
             </div>
-            <h1 class="text-5xl lg:text-7xl font-bold leading-tight mb-6 text-slate-900">
+            <h1 class="text-4xl lg:text-6xl font-bold leading-tight mb-4 text-slate-900">
                 Kelola Tabungan <br>
                 <span class="text-[#1e3a29]">Lebih Mudah</span> & Aman
             </h1>
-            <p class="text-lg text-slate-600 mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+            <p class="text-base text-slate-600 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                 TASIA (Tabungan Siswa An Nadzir) - Aplikasi pencatatan tabungan siswa yang transparan, modern, dan mudah diakses. Pantau saldo dan riwayat transaksi kapan saja, di mana saja.
             </p>
             
@@ -178,8 +179,8 @@
     </div><!-- End Hero Section with Background -->
 
     <!-- Features -->
-    <section id="features" class="bg-white py-20">
-        <div class="container mx-auto px-6">
+    <section id="features" class="bg-white py-12">
+        <div class="mx-auto px-6 max-w-[95%]">
             <h2 class="text-3xl font-bold text-center mb-16 text-slate-800">Kenapa Memilih Kami?</h2>
             
             <div class="grid md:grid-cols-3 gap-10">
@@ -217,8 +218,8 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
+    <section id="about" class="py-12 bg-white">
+        <div class="mx-auto px-6 max-w-[95%]">
             <h2 class="text-3xl font-bold text-center mb-8 text-slate-800">Tentang TASIA</h2>
             <div class="max-w-3xl mx-auto text-center">
                 <p class="text-lg text-slate-600 mb-6 leading-relaxed">
@@ -234,8 +235,8 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-slate-50">
-        <div class="container mx-auto px-6">
+    <section id="contact" class="py-12 bg-slate-50">
+        <div class="mx-auto px-6 max-w-[95%]">
             <h2 class="text-3xl font-bold text-center mb-12 text-slate-800">Hubungi Kami</h2>
             <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
