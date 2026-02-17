@@ -10,6 +10,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Maatwebsite\Excel\Facades\Excel;
+use Livewire\Attributes\Computed;
 
 class TransactionManagement extends Component
 {
@@ -28,10 +29,18 @@ class TransactionManagement extends Component
     public $description;
     public $status = 'pending';
     
+    public $selectedTransactions = [];
+    public $selectAllPage = false;
+
     public $search = '';
     public $studentSearch = '';
     public $filterType = '';
     public $filterStatus = '';
+    public $filterClass = '';
+    public $filterSavingType = '';
+    public $startDate = '';
+    public $endDate = '';
+    public $recapDate;
 
     protected $rules = [
         'user_id' => 'required|exists:users,id',
@@ -43,13 +52,81 @@ class TransactionManagement extends Component
         'status' => 'required|in:pending,approved,rejected',
     ];
 
+    protected $validationAttributes = [
+        'importFile' => 'file import',
+        'user_id' => 'siswa',
+        'saving_type_id' => 'produk tabungan',
+        'type' => 'tipe',
+        'amount' => 'jumlah',
+        'date' => 'tanggal',
+        'status' => 'status',
+    ];
+
+    public function updatedSelectAllPage($value)
+    {
+        if ($value) {
+            $this->selectedTransactions = Transaction::query()
+                ->when($this->search, function($query) {
+                    $query->whereHas('user', function($q) {
+                        $q->where('name', 'like', '%' . $this->search . '%')
+                          ->orWhere('student_id', 'like', '%' . $this->search . '%');
+                    });
+                })
+                ->when($this->filterType, function($query) { $query->where('type', $this->filterType); })
+                ->when($this->filterStatus, function($query) { $query->where('status', $this->filterStatus); })
+                ->pluck('id')
+                ->map(fn($id) => (string)$id)
+                ->toArray();
+        } else {
+            $this->selectedTransactions = [];
+        }
+    }
+
+    #[Computed]
+    public function selectionSummary()
+    {
+        if (empty($this->selectedTransactions)) {
+            return null;
+        }
+
+        $transactions = Transaction::whereIn('id', $this->selectedTransactions)->get();
+        
+        $totalAmount = $transactions->sum(function($t) {
+            return $t->type === 'deposit' ? (float)$t->amount : -(float)$t->amount;
+        });
+
+        $userIds = $transactions->pluck('user_id')->unique();
+        
+        $studentsBalance = Transaction::whereIn('user_id', $userIds)
+            ->where('status', 'approved')
+            ->selectRaw("SUM(CASE WHEN type = 'deposit' THEN amount ELSE -amount END) as total")
+            ->value('total') ?? 0;
+
+        return [
+            'transaction_count' => count($this->selectedTransactions),
+            'student_count' => count($userIds),
+            'total_selected_amount' => $totalAmount,
+            'total_students_balance' => (float)$studentsBalance,
+        ];
+    }
+
+    public function clearSelection()
+    {
+        $this->selectedTransactions = [];
+        $this->selectAllPage = false;
+    }
+
+
     public function render()
     {
-        $transactions = Transaction::with(['user', 'savingType'])
+        $transactions = Transaction::with(['user.classRoom', 'savingType'])
             ->when($this->search, function($query) {
                 $query->whereHas('user', function($q) {
                     $q->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('student_id', 'like', '%' . $this->search . '%');
+                      ->orWhere('student_id', 'like', '%' . $this->search . '%')
+                      ->orWhereHas('classRoom', function($sq) {
+                          $sq->where('name', 'like', '%' . $this->search . '%');
+                      });
                 });
             })
             ->when($this->filterType, function($query) {
@@ -57,6 +134,20 @@ class TransactionManagement extends Component
             })
             ->when($this->filterStatus, function($query) {
                 $query->where('status', $this->filterStatus);
+            })
+            ->when($this->filterClass, function($query) {
+                $query->whereHas('user', function($q) {
+                    $q->where('class_room_id', $this->filterClass);
+                });
+            })
+            ->when($this->filterSavingType, function($query) {
+                $query->where('saving_type_id', $this->filterSavingType);
+            })
+            ->when($this->startDate, function($query) {
+                $query->whereDate('date', '>=', $this->startDate);
+            })
+            ->when($this->endDate, function($query) {
+                $query->whereDate('date', '<=', $this->endDate);
             })
             ->latest()
             ->paginate(15);
@@ -99,6 +190,12 @@ class TransactionManagement extends Component
         $this->studentSearch = ''; 
         $this->dispatch('transaction-saved');
         $this->resetErrorBag();
+    }
+
+    public function resetFilters()
+    {
+        $this->reset(['search', 'filterType', 'filterStatus', 'filterClass', 'filterSavingType', 'startDate', 'endDate']);
+        $this->resetPage();
     }
 
     public function save()

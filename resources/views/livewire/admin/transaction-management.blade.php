@@ -15,12 +15,14 @@
                     </span>
                 </button>
             @endif
-            <button wire:click="openImportModal" class="px-4 py-3 md:px-6 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-900/20">
-                <span class="flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
-                    <span class="hidden md:inline">Import Excel</span>
-                </span>
+            <button wire:click="openImportModal" class="px-4 py-3 md:px-6 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-900/20 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                <span class="hidden md:inline">Import Excel</span>
             </button>
+            <a href="{{ route('admin.transactions.daily-recap') }}" class="px-4 py-3 md:px-6 bg-amber-500 text-white rounded-xl font-semibold hover:bg-amber-600 transition-all shadow-lg shadow-amber-900/20 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m3.243-4.243a4 4 0 015.657 0m0 0a4 4 0 010 5.657m0 0a4 4 0 01-5.657 0" /></svg>
+                <span class="hidden md:inline">Rekap Harian</span>
+            </a>
             <button wire:click="openModal" class="px-4 py-3 md:px-6 bg-[#1e3a29] text-white rounded-xl font-semibold hover:bg-[#2a4d38] transition-all shadow-lg shadow-emerald-900/20">
                 <span class="flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
@@ -31,33 +33,135 @@
 
     </div>
 
-    @if (session()->has('message'))
-        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl">
-            {{ session('message') }}
-        </div>
-    @endif
-
-    @if (session()->has('error'))
-        <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl">
-            {{ session('error') }}
-        </div>
-    @endif
+    <!-- Floating Notifications -->
+    <div class="fixed top-6 right-6 z-[100] flex flex-col gap-3 min-w-[320px] max-w-md">
+        @if (session()->has('message'))
+            <div x-data="{ show: true }" 
+                 x-show="show" 
+                 x-init="setTimeout(() => show = false, 5000)"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="translate-x-full opacity-0"
+                 x-transition:enter-end="translate-x-0 opacity-100"
+                 x-transition:leave="transition ease-in duration-300"
+                 x-transition:leave-start="translate-x-0 opacity-100"
+                 x-transition:leave-end="translate-x-full opacity-0"
+                 class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl shadow-xl shadow-emerald-900/10 flex items-start gap-3 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent"></div>
+                <div class="p-2 bg-emerald-500 text-white rounded-lg shrink-0 relative z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                </div>
+                <div class="flex-1 relative z-10">
+                    <p class="font-bold text-sm">Berhasil!</p>
+                    <p class="text-xs opacity-90">{{ session('message') }}</p>
+                </div>
+                <button @click="show = false" class="text-emerald-400 hover:text-emerald-600 transition-colors relative z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <div class="absolute bottom-0 left-0 h-1 bg-emerald-500/20 w-full">
+                    <div class="h-full bg-emerald-500 transition-all duration-[5000ms] ease-linear" x-init="$el.style.width = '0%'"></div>
+                </div>
+            </div>
+        @endif
+    
+        @if (session()->has('error'))
+            <div x-data="{ show: true }" 
+                 x-show="show" 
+                 x-init="setTimeout(() => show = false, 8000)"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="translate-x-full opacity-0"
+                 x-transition:enter-end="translate-x-0 opacity-100"
+                 x-transition:leave="transition ease-in duration-300"
+                 x-transition:leave-start="translate-x-0 opacity-100"
+                 x-transition:leave-end="translate-x-full opacity-0"
+                 class="p-4 bg-red-50 border border-red-200 text-red-800 rounded-2xl shadow-xl shadow-red-900/10 flex items-start gap-3 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-r from-red-500/5 to-transparent"></div>
+                <div class="p-2 bg-red-500 text-white rounded-lg shrink-0 relative z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                    </svg>
+                </div>
+                <div class="flex-1 relative z-10">
+                    <p class="font-bold text-sm">Terjadi Kesalahan</p>
+                    <p class="text-xs opacity-90">{{ session('error') }}</p>
+                </div>
+                <button @click="show = false" class="text-red-400 hover:text-red-600 transition-colors relative z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        @endif
+    </div>
 
     <!-- Search & Filter -->
     <div class="mb-6 bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <input wire:model.live="search" type="text" placeholder="Cari nama atau NIS siswa..." class="px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
-            <select wire:model.live="filterType" class="px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
-                <option value="">Semua Tipe</option>
-                <option value="deposit">Setoran</option>
-                <option value="withdrawal">Penarikan</option>
-            </select>
-            <select wire:model.live="filterStatus" class="px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
-                <option value="">Semua Status</option>
-                <option value="pending">Pending</option>
-                <option value="approved">Disetujui</option>
-                <option value="rejected">Ditolak</option>
-            </select>
+        <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1 ml-1">Cari</label>
+                <input wire:model.live="search" type="text" placeholder="Nama, NIS, atau Kelas..." class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none text-sm">
+            </div>
+            
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1 ml-1">Kelas</label>
+                <select wire:model.live="filterClass" class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none text-sm">
+                    <option value="">Semua Kelas</option>
+                    @foreach($classes as $class)
+                        <option value="{{ $class->id }}">{{ $class->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1 ml-1">Produk</label>
+                <select wire:model.live="filterSavingType" class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none text-sm">
+                    <option value="">Semua Produk</option>
+                    @foreach($savingTypes as $st)
+                        <option value="{{ $st->id }}">{{ $st->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1 ml-1">Tipe</label>
+                <select wire:model.live="filterType" class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none text-sm">
+                    <option value="">Semua Tipe</option>
+                    <option value="deposit">Setoran</option>
+                    <option value="withdrawal">Penarikan</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1 ml-1">Status</label>
+                <select wire:model.live="filterStatus" class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none text-sm">
+                    <option value="">Semua Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Disetujui</option>
+                    <option value="rejected">Ditolak</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1 ml-1">Dari Tanggal</label>
+                <input wire:model.live="startDate" type="date" class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none text-sm">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1 ml-1">Sampai Tanggal</label>
+                <input wire:model.live="endDate" type="date" class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none text-sm">
+            </div>
+
+            <div class="flex items-end">
+                <button wire:click="resetFilters" class="w-full px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors text-sm font-semibold flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                    </svg>
+                    Reset Filter
+                </button>
+            </div>
         </div>
     </div>
 
@@ -67,8 +171,12 @@
             <table class="w-full">
                 <thead class="bg-slate-50">
                     <tr class="text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-3 py-3 md:px-6 md:py-4">
+                            <input type="checkbox" wire:model.live="selectAllPage" class="rounded border-slate-300 text-lime-600 focus:ring-lime-500">
+                        </th>
                         <th class="px-3 py-3 md:px-6 md:py-4 hidden md:table-cell">Tanggal</th>
                         <th class="px-3 py-3 md:px-6 md:py-4">Siswa</th>
+                        <th class="px-3 py-3 md:px-6 md:py-4 hidden md:table-cell">Kelas</th>
                         <th class="px-3 py-3 md:px-6 md:py-4 hidden md:table-cell">Produk</th>
                         <th class="px-3 py-3 md:px-6 md:py-4">Tipe</th>
                         <th class="px-3 py-3 md:px-6 md:py-4">Jumlah</th>
@@ -78,14 +186,22 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($transactions as $transaction)
-                    <tr class="hover:bg-slate-50 transition-colors">
+                    <tr class="hover:bg-slate-50 transition-colors {{ in_array($transaction->id, $selectedTransactions) ? 'bg-lime-50/50' : '' }}">
+                        <td class="px-3 py-3 md:px-6 md:py-4">
+                            <input type="checkbox" wire:model.live="selectedTransactions" value="{{ $transaction->id }}" class="rounded border-slate-300 text-lime-600 focus:ring-lime-500">
+                        </td>
                         <td class="px-3 py-3 md:px-6 md:py-4 text-xs md:text-sm text-slate-600 hidden md:table-cell">
                             {{ \Carbon\Carbon::parse($transaction->date)->format('d M Y') }}
                         </td>
                         <td class="px-3 py-3 md:px-6 md:py-4">
                             <div class="font-bold text-slate-800 text-sm md:text-base">{{ $transaction->user->name }}</div>
                             <div class="text-[10px] md:text-xs text-slate-500">{{ $transaction->user->student_id }}</div>
-                            <div class="md:hidden text-[10px] text-slate-400 mt-0.5">{{ \Carbon\Carbon::parse($transaction->date)->format('d M Y') }}</div>
+                            <div class="md:hidden text-[10px] text-slate-400 mt-0.5">
+                                {{ $transaction->user->classRoom->name ?? '-' }} • {{ \Carbon\Carbon::parse($transaction->date)->format('d M Y') }}
+                            </div>
+                        </td>
+                        <td class="px-3 py-3 md:px-6 md:py-4 text-xs md:text-sm text-slate-600 hidden md:table-cell">
+                            {{ $transaction->user->classRoom->name ?? '-' }}
                         </td>
                         <td class="px-3 py-3 md:px-6 md:py-4 text-xs md:text-sm text-slate-600 hidden md:table-cell">
                             {{ $transaction->savingType->name }}
@@ -148,7 +264,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-slate-400">
+                        <td colspan="9" class="px-6 py-12 text-center text-slate-400">
                             Belum ada transaksi
                         </td>
                     </tr>
@@ -161,6 +277,37 @@
             {{ $transactions->links() }}
         </div>
     </div>
+
+    <!-- Calculator Summary Bar -->
+    @if($this->selectionSummary)
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-full max-w-2xl px-4"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="translate-y-full opacity-0"
+         x-transition:enter-end="translate-y-0 opacity-100">
+        <div class="bg-slate-900 text-white rounded-2xl shadow-2xl p-4 md:p-6 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-6">
+                <div class="flex flex-col text-center md:text-left">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Siswa Dipilih</span>
+                    <span class="text-xl font-bold text-lime-400">{{ $this->selectionSummary['student_count'] }} <span class="text-xs font-normal text-slate-400 ml-1">Siswa</span></span>
+                </div>
+                <div class="w-px h-8 bg-slate-700 hidden md:block"></div>
+                <div class="flex flex-col text-center md:text-left font-mono">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Saldo Siswa</span>
+                    <span class="text-xl font-bold">Rp {{ number_format($this->selectionSummary['total_students_balance'], 0, ',', '.') }}</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <div class="flex flex-col items-end mr-2 md:mr-4">
+                    <span class="text-[10px] text-slate-400 font-medium">{{ $this->selectionSummary['transaction_count'] }} Transaksi</span>
+                </div>
+                <button wire:click="clearSelection" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-sm font-bold transition-all border border-slate-700">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- Modal -->
     @if($showModal)
@@ -307,9 +454,27 @@
             </div>
 
             <form wire:submit="import" class="space-y-6">
-                <div>
+                <div 
+                    x-data="{ isUploading: false, progress: 0 }"
+                    x-on:livewire-upload-start="isUploading = true"
+                    x-on:livewire-upload-finish="isUploading = false"
+                    x-on:livewire-upload-error="isUploading = false"
+                    x-on:livewire-upload-progress="progress = $event.detail.progress"
+                >
                     <label class="block text-sm font-medium text-slate-700 mb-2">Pilih File Excel</label>
-                    <input wire:model="importFile" type="file" accept=".xlsx,.xls,.csv" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+                    <input wire:model="importFile" type="file" id="importFile" wire:key="import-file-input" accept=".xlsx,.xls,.csv" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+                    
+                    <!-- Progress Bar -->
+                    <div x-show="isUploading" class="mt-2 text-xs">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-blue-600 font-semibold italic">Sedang mengunggah...</span>
+                            <span x-text="progress + '%'" class="text-blue-600 font-semibold"></span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-1.5">
+                            <div class="bg-blue-600 h-1.5 rounded-full transition-all duration-300" :style="'width: ' + progress + '%'"></div>
+                        </div>
+                    </div>
+
                     @error('importFile') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                     <p class="text-xs text-slate-500 mt-2">Format: .xlsx (Disarankan), .xls, .csv (Max: 2MB)</p>
                 </div>
@@ -318,8 +483,15 @@
                     <button type="button" wire:click="closeImportModal" class="flex-1 px-4 py-2.5 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors font-medium">
                         Batal
                     </button>
-                    <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                        Import Data
+                    <button type="submit" wire:loading.attr="disabled" wire:target="importFile, import" class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                        <span wire:loading.remove wire:target="import">Import Data</span>
+                        <span wire:loading wire:target="import">
+                            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Memproses...
+                        </span>
                     </button>
                 </div>
             </form>
@@ -327,3 +499,4 @@
     </div>
     @endif
 </div>
+
