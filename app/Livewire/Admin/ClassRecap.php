@@ -23,10 +23,10 @@ class ClassRecap extends Component
         $this->students = \App\Models\User::where('class_room_id', $id)
             ->where('role', 'student')
             ->withSum(['transactions as total_deposit' => function ($query) {
-                $query->where('type', 'deposit')->where('status', 'approved');
+                $query->where('type', 'deposit')->whereIn('status', ['approved', 'pending']);
             }], 'amount')
             ->withSum(['transactions as total_withdrawal' => function ($query) {
-                $query->where('type', 'withdrawal')->where('status', 'approved');
+                $query->where('type', 'withdrawal')->whereIn('status', ['approved', 'pending']);
             }], 'amount')
             ->orderBy('name')
             ->get();

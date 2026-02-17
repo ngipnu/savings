@@ -28,13 +28,27 @@
                 <input wire:model.live="endDate" type="date" class="px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 outline-none text-sm shadow-sm bg-white">
             </div>
             <div class="flex items-center gap-3">
-                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Pilih Kelas:</label>
-                <select wire:model.live="classId" class="px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 outline-none text-sm shadow-sm bg-white min-w-[150px]">
-                    <option value="">-- Semua Kelas --</option>
-                    @foreach($classes as $class)
-                        <option value="{{ $class->id }}">{{ $class->name }}</option>
-                    @endforeach
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Status:</label>
+                <select wire:model.live="status" class="px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 outline-none text-sm shadow-sm bg-white">
+                    <option value="all">Semua Status (Valid & Pending)</option>
+                    <option value="approved">Hanya Disetujui</option>
+                    <option value="pending">Hanya Pending</option>
                 </select>
+            </div>
+            <div class="flex items-center gap-3">
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Pilih Kelas:</label>
+                @if(auth()->user()->role === 'wali_kelas')
+                    <div class="px-4 py-2 border border-slate-100 bg-slate-50 rounded-lg text-sm text-slate-600 font-bold">
+                        {{ auth()->user()->teachingClass->name ?? 'Belum Ada Kelas' }}
+                    </div>
+                @else
+                    <select wire:model.live="classId" class="px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 outline-none text-sm shadow-sm bg-white min-w-[150px]">
+                        <option value="">-- Semua Kelas --</option>
+                        @foreach($classes as $class)
+                            <option value="{{ $class->id }}">{{ $class->name }}</option>
+                        @endforeach
+                    </select>
+                @endif
             </div>
             <div class="text-xs text-slate-400 italic">
                 <span class="flex items-center gap-1">

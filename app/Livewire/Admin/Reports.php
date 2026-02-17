@@ -40,12 +40,12 @@ class Reports extends Component
     {
         // Calculate Cash Balance (from transactions)
         $deposits = Transaction::where('type', 'deposit')
-            ->where('status', 'approved')
+            ->whereIn('status', ['approved', 'pending'])
             ->whereBetween('date', [$this->startDate, $this->endDate])
             ->sum('amount');
             
         $withdrawals = Transaction::where('type', 'withdrawal')
-            ->where('status', 'approved')
+            ->whereIn('status', ['approved', 'pending'])
             ->whereBetween('date', [$this->startDate, $this->endDate])
             ->sum('amount');
             

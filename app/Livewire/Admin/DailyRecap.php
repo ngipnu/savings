@@ -12,13 +12,22 @@ class DailyRecap extends Component
     public $startDate;
     public $endDate;
     public $classId;
+    public $status = 'all'; // all, approved, pending
     public $classes;
 
     public function mount()
     {
+        $user = auth()->user();
+        
+        // Scoping for Wali Kelas
+        if ($user->role === 'wali_kelas') {
+            $this->classId = $user->teachingClass?->id;
+        } else {
+            $this->classId = request('class_id');
+        }
+
         $this->startDate = now()->subDays(6)->format('Y-m-d');
         $this->endDate = now()->format('Y-m-d');
-        $this->classId = request('class_id');
         $this->classes = ClassRoom::all();
     }
 
@@ -38,7 +47,12 @@ class DailyRecap extends Component
 
         $transactions = Transaction::with(['user.classRoom'])
             ->whereBetween('date', [$start, $end])
-            ->where('status', 'approved')
+            ->when($this->status !== 'all', function($query) {
+                $query->where('status', $this->status);
+            })
+            ->when($this->status === 'all', function($query) {
+                $query->whereIn('status', ['approved', 'pending']);
+            })
             ->when($this->classId, function($query) {
                 $query->whereHas('user', function($q) {
                     $q->where('class_room_id', $this->classId);
@@ -53,7 +67,9 @@ class DailyRecap extends Component
                 $user = $studentTransactions->first()->user;
                 $dailyData = [];
                 foreach ($dates as $date) {
-                    $dayTrans = $studentTransactions->where('date', $date);
+                    $dayTrans = $studentTransactions->filter(function($t) use ($date) {
+                        return $t->date->format('Y-m-d') === $date;
+                    });
                     $mutation = $dayTrans->where('type', 'deposit')->sum('amount') - $dayTrans->where('type', 'withdrawal')->sum('amount');
                     $dailyData[$date] = $mutation;
                 }
