@@ -55,6 +55,82 @@
             background-color: #f7fee7; /* lime-50 */
             color: #1e3a29;
         }
+
+        .print-only {
+            display: none;
+        }
+
+        /* Print Styles */
+        @media print {
+            .no-print, 
+            #sidebar-desktop, 
+            #sidebar-mobile, 
+            #mobile-header,
+            header, 
+            aside, 
+            nav, 
+            button, 
+            .flex.gap-3, 
+            input, 
+            select,
+            form,
+            footer {
+                display: none !important;
+            }
+
+            .print-only {
+                display: block !important;
+            }
+            
+            .min-h-screen.flex {
+                display: block !important;
+            }
+
+            main {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-width: none !important;
+                position: relative !important;
+                left: 0 !important;
+            }
+
+            body {
+                background: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .bg-white, .bg-slate-50, .bg-slate-100 {
+                background-color: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+
+            .sticky, [class*="sticky"] {
+                position: static !important;
+            }
+
+            .overflow-x-auto, [class*="overflow-"] {
+                overflow: visible !important;
+                max-height: none !important;
+            }
+
+            table {
+                min-width: 100% !important;
+                width: 100% !important;
+                border: 1px solid #e2e8f0 !important;
+            }
+
+            th, td {
+                border: 1px solid #e2e8f0 !important;
+            }
+
+            @page {
+                size: landscape;
+                margin: 1cm;
+            }
+        }
     </style>
     @livewireStyles
 </head>
@@ -62,7 +138,7 @@
     
     <div class="min-h-screen flex flex-col md:flex-row">
         <!-- Sidebar -->
-        <aside class="w-full md:w-64 bg-white border-r border-slate-200 flex-shrink-0 flex-col fixed h-full z-30 hidden md:flex">
+        <aside id="sidebar-desktop" class="w-full md:w-64 bg-white border-r border-slate-200 flex-shrink-0 flex-col fixed h-full z-30 hidden md:flex no-print">
             <div class="p-8 flex items-center gap-3">
                 <img src="{{ asset('logo_round.png') }}" alt="Logo" class="w-10 h-10 rounded-lg object-cover">
                 <h1 class="text-xl font-bold tracking-tight text-[#1e3a29]">TASIA</h1>
@@ -185,7 +261,7 @@
         </aside>
 
         <!-- Mobile Header -->
-        <header class="md:hidden bg-white border-b border-slate-200 p-4 sticky top-0 z-40 flex justify-between items-center">
+        <header id="mobile-header" class="md:hidden bg-white border-b border-slate-200 p-4 sticky top-0 z-40 flex justify-between items-center no-print">
             <div class="flex items-center gap-2">
                 <img src="{{ asset('logo_round.png') }}" alt="Logo" class="w-8 h-8 rounded-lg object-cover">
                 <h1 class="text-lg font-bold text-[#1e3a29]">TASIA</h1>
@@ -199,7 +275,7 @@
         </header>
 
         <!-- Mobile Sidebar -->
-        <aside x-show="mobileMenuOpen" 
+        <aside id="sidebar-mobile" x-show="mobileMenuOpen" 
                x-cloak
                @click.away="mobileMenuOpen = false"
                x-transition:enter="transition ease-out duration-200"
@@ -208,7 +284,7 @@
                x-transition:leave="transition ease-in duration-150"
                x-transition:leave-start="opacity-100 translate-x-0"
                x-transition:leave-end="opacity-0 -translate-x-full"
-               class="md:hidden fixed inset-0 z-50 flex">
+               class="md:hidden fixed inset-0 z-50 flex no-print">
             <div class="w-64 bg-white border-r border-slate-200 flex flex-col h-full overflow-y-auto shadow-xl">
                 <!-- Same content as desktop sidebar -->
                 <div class="p-6 flex items-center gap-3 border-b border-slate-200">

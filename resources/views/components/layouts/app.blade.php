@@ -56,6 +56,35 @@
              background-color: #ecfdf5; /* emerald-50 */
              color: #064e3b;
          }
+        /* Print Styles */
+        @media print {
+            .no-print, 
+            button, 
+            header, 
+            nav, 
+            aside, 
+            .flex.gap-3, 
+            form, 
+            input, 
+            select {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            main {
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: none !important;
+            }
+            @page {
+                size: landscape;
+                margin: 1cm;
+            }
+        }
     </style>
     @livewireStyles
 </head>

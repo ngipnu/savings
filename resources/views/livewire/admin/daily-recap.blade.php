@@ -2,9 +2,10 @@
     <div class="mb-8 flex justify-between items-center">
         <div>
             <h1 class="text-3xl font-bold text-[#1e3a29] tracking-tight">Neraca Mutasi Harian</h1>
-            <p class="text-slate-500 mt-1">Laporan mutasi tabungan siswa (Setoran - Penarikan)</p>
+            <p class="text-slate-500 mt-1 no-print">Laporan mutasi tabungan siswa (Setoran - Penarikan)</p>
+            <p class="text-slate-600 mt-1 print-only font-bold">Periode: {{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }} s/d {{ \Carbon\Carbon::parse($endDate)->format('d/m/Y') }}</p>
         </div>
-        <div class="flex gap-3">
+        <div class="flex gap-3 no-print">
             <button onclick="window.print()" class="px-6 py-3 bg-[#1e3a29] text-white rounded-xl font-semibold hover:bg-[#2a4d38] transition-all shadow-lg shadow-emerald-900/20 flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 012-2H9a2 2 0 01-2 2v4h10z" /></svg>
                 <span class="hidden md:inline">Cetak Laporan</span>
@@ -17,7 +18,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 no-print">
         <div class="flex flex-wrap items-center gap-6">
             <div class="flex items-center gap-3">
                 <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Dari Tanggal:</label>
