@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/academic-years', AcademicYearManagement::class)->name('academic-years');
         Route::get('/students/{id}/print-account', \App\Livewire\Admin\AccountPrint::class)->name('student.print-account');
         Route::get('/students/bulk-print-account/{ids}', \App\Livewire\Admin\BulkAccountPrint::class)->name('student.bulk-print-account');
+        Route::get('/students/{id}/recap', \App\Livewire\Admin\StudentRecap::class)->name('student.recap');
         
         // Template Routes
         Route::get('/templates/student', [\App\Http\Controllers\Admin\TemplateController::class, 'downloadStudentTemplate'])->name('template.student');

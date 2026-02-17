@@ -206,8 +206,8 @@
                             {{ \Carbon\Carbon::parse($transaction->date)->format('d M Y') }}
                         </td>
                         <td class="px-3 py-3 md:px-6 md:py-4">
-                            <div class="font-bold text-slate-800 text-sm md:text-base">{{ $transaction->user->name }}</div>
-                            <div class="text-[10px] md:text-xs text-slate-500">{{ $transaction->user->student_id }}</div>
+                            <a href="{{ route('admin.student.recap', $transaction->user->id) }}" class="font-bold text-slate-800 text-sm md:text-base hover:text-[#1e3a29] transition-colors block">{{ $transaction->user->name }}</a>
+                            <div class="text-[10px] md:text-xs text-slate-500 mt-0.5">{{ $transaction->user->student_id }}</div>
                             <div class="md:hidden text-[10px] text-slate-400 mt-0.5">
                                 {{ $transaction->user->classRoom->name ?? '-' }} • {{ \Carbon\Carbon::parse($transaction->date)->format('d M Y') }}
                             </div>
