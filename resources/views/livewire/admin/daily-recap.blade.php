@@ -138,7 +138,7 @@
                                     }
                                 }
                             @endphp
-                            <td class="px-2 py-2 text-center border border-slate-200 text-xs {{ $colTotal > 0 ? 'text-emerald-700' : ($colTotal < 0 ? 'text-rose-700' : 'text-slate-400') }}">
+                            <td class="px-2 py-2 text-center border border-slate-200 text-xs text-black">
                                 {{ $colTotal != 0 ? ($colTotal > 0 ? number_format($colTotal, 0, ',', '.') : '(' . number_format(abs($colTotal), 0, ',', '.') . ')') : '-' }}
                             </td>
                         @endforeach
