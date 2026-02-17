@@ -36,6 +36,14 @@
                     </svg>
                     <span class="hidden md:inline">Profile Saya</span>
                 </a>
+
+                <!-- Transaksi Button -->
+                <a href="{{ route('admin.transactions') }}" class="px-4 py-2 bg-[#1e3a29] text-white rounded-xl hover:bg-[#2a4d38] transition-colors font-medium flex items-center gap-2 shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    <span>Catat Transaksi</span>
+                </a>
             </div>
         </div>
 

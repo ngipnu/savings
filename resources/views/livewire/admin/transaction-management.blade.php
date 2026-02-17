@@ -5,7 +5,7 @@
             <p class="text-slate-500 mt-1">Kelola transaksi setoran dan penarikan tabungan</p>
         </div>
         <div class="flex gap-3">
-             @if(auth()->user()->role === 'super_admin' && \App\Models\Transaction::where('status', 'pending')->exists())
+             @if(in_array(auth()->user()->role, ['super_admin', 'admin']) && \App\Models\Transaction::where('status', 'pending')->exists())
                 <button wire:click="approveAll" wire:confirm="Yakin ingin menyetujui SEMUA transaksi pending?" class="px-4 py-3 md:px-6 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-900/20">
                     <span class="flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -233,7 +233,7 @@
                                     </svg>
                                     <span class="hidden md:inline">Cetak</span>
                                 </a>
-                                @if($transaction->status === 'pending' && auth()->user()->role === 'super_admin')
+                                @if($transaction->status === 'pending' && in_array(auth()->user()->role, ['super_admin', 'admin']))
                                     <button wire:click="approve({{ $transaction->id }})" class="px-2 py-1 md:px-3 md:py-1.5 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-colors text-xs md:text-sm font-medium">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 md:hidden">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
@@ -381,7 +381,7 @@
                         @error('date') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
-                    @if(auth()->user()->role !== 'operator')
+                    @if(!in_array(auth()->user()->role, ['operator', 'wali_kelas']))
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-2">Status</label>
                         <select wire:model="status" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">

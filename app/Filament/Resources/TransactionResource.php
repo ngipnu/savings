@@ -20,18 +20,29 @@ class TransactionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
-    protected static ?string $navigationGroup = 'Financial';
+    // protected static ?string $navigationGroup = 'Financial';
+    
+    public static function getNavigationLabel(): string
+    {
+        return 'Manajemen Transaksi';
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return true;
+    }
 
     protected static ?int $navigationSort = 1;
 
     public static function getNavigationBadge(): ?string
     {
-        /** @var \App\Models\User */
-        $user = auth()->user();
-        if (in_array($user->role, ['admin', 'super_admin', 'operator'])) {
-            return (string) Transaction::where('status', 'pending')->count();
-        }
         return null;
+        /** @var \App\Models\User */
+        // $user = auth()->user();
+        // if (in_array($user->role, ['admin', 'super_admin', 'operator'])) {
+        //     return (string) Transaction::where('status', 'pending')->count();
+        // }
+        // return null;
     }
 
     public static function getNavigationBadgeColor(): ?string

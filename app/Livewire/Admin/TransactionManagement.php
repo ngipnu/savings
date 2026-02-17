@@ -16,6 +16,13 @@ class TransactionManagement extends Component
 {
     use WithPagination, WithFileUploads;
 
+    public function mount()
+    {
+        if (!in_array(auth()->user()->role, ['super_admin', 'admin', 'operator', 'wali_kelas'])) {
+            abort(403);
+        }
+    }
+
     public $showModal = false;
     public $showImportModal = false;
     public $editMode = false;
@@ -149,10 +156,19 @@ class TransactionManagement extends Component
             ->when($this->endDate, function($query) {
                 $query->whereDate('date', '<=', $this->endDate);
             })
+            ->when(auth()->user()->role === 'wali_kelas', function($query) {
+                $query->whereHas('user', function($q) {
+                    $q->where('class_room_id', auth()->user()->teachingClass?->id);
+                });
+            })
             ->latest()
             ->paginate(15);
 
-        $students = User::where('role', 'student')->get();
+        $students = User::where('role', 'student')
+            ->when(auth()->user()->role === 'wali_kelas', function($query) {
+                $query->where('class_room_id', auth()->user()->teachingClass?->id);
+            })
+            ->get();
         $savingTypes = SavingType::all();
         $classes = \App\Models\ClassRoom::all();
 
@@ -202,7 +218,7 @@ class TransactionManagement extends Component
     {
         $this->validate();
 
-        if (auth()->user()->role === 'operator') {
+        if (in_array(auth()->user()->role, ['operator', 'wali_kelas'])) {
             $this->status = 'pending';
         }
 
@@ -252,39 +268,43 @@ class TransactionManagement extends Component
 
     public function approve($id)
     {
-        if (auth()->user()->role !== 'super_admin') {
+        if (!in_array(auth()->user()->role, ['super_admin', 'admin'])) {
             return;
         }
         $transaction = Transaction::findOrFail($id);
-        $transaction->update(['status' => 'approved']);
+        $transaction->update(['status' => 'approved', 'approved_by' => auth()->id()]);
         session()->flash('message', 'Transaksi berhasil disetujui!');
     }
 
     public function reject($id)
     {
-        if (auth()->user()->role !== 'super_admin') {
+        if (!in_array(auth()->user()->role, ['super_admin', 'admin'])) {
             return;
         }
         $transaction = Transaction::findOrFail($id);
-        $transaction->update(['status' => 'rejected']);
+        $transaction->update(['status' => 'rejected', 'approved_by' => auth()->id()]);
         session()->flash('message', 'Transaksi ditolak!');
     }
 
     public function delete($id)
     {
+        if (!in_array(auth()->user()->role, ['super_admin', 'admin'])) {
+             session()->flash('error', 'Hanya Admin yang dapat menghapus transaksi.');
+             return;
+        }
         Transaction::findOrFail($id)->delete();
         session()->flash('message', 'Transaksi berhasil dihapus!');
     }
 
     public function approveAll()
     {
-        if (auth()->user()->role !== 'super_admin') {
+        if (!in_array(auth()->user()->role, ['super_admin', 'admin'])) {
             return;
         }
         $count = Transaction::where('status', 'pending')->count();
         
         if ($count > 0) {
-            Transaction::where('status', 'pending')->update(['status' => 'approved']);
+            Transaction::where('status', 'pending')->update(['status' => 'approved', 'approved_by' => auth()->id()]);
             session()->flash('message', "$count transaksi berhasil disetujui sekaligus!");
         } else {
             session()->flash('message', 'Tidak ada transaksi pending untuk disetujui.');
