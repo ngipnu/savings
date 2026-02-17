@@ -51,6 +51,23 @@
                     </select>
                 @endif
             </div>
+
+            <div class="flex items-center gap-3">
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Urutkan Siswa:</label>
+                <select wire:change="setSort($event.target.value)" class="px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 outline-none text-sm shadow-sm bg-white">
+                    <option value="name-asc">Nama (A-Z)</option>
+                    <option value="name-desc">Nama (Z-A)</option>
+                    <option value="last_activity-desc">Aktivitas Terakhir</option>
+                </select>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Urutkan Tanggal:</label>
+                <select wire:model.live="dateDirection" class="px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 outline-none text-sm shadow-sm bg-white">
+                    <option value="asc">Terlama -> Terbaru</option>
+                    <option value="desc">Terbaru -> Terlama</option>
+                </select>
+            </div>
             <div class="text-xs text-slate-400 italic">
                 <span class="flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>

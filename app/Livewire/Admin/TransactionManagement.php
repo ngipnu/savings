@@ -124,6 +124,13 @@ class TransactionManagement extends Component
     }
 
 
+    public $sortBy = 'date_desc';
+
+    public function updatedSortBy()
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
         $transactions = Transaction::with(['user.classRoom', 'savingType'])
@@ -161,7 +168,25 @@ class TransactionManagement extends Component
                     $q->where('class_room_id', auth()->user()->teachingClass?->id);
                 });
             })
-            ->latest()
+            ->when($this->sortBy, function($query) {
+                if ($this->sortBy === 'date_asc') {
+                    $query->orderBy('date', 'asc')->orderBy('created_at', 'asc');
+                } elseif ($this->sortBy === 'date_desc') {
+                    $query->orderBy('date', 'desc')->orderBy('created_at', 'desc');
+                } elseif ($this->sortBy === 'amount_asc') {
+                    $query->orderBy('amount', 'asc');
+                } elseif ($this->sortBy === 'amount_desc') {
+                    $query->orderBy('amount', 'desc');
+                } elseif ($this->sortBy === 'created_at_desc') {
+                    $query->latest();
+                } elseif ($this->sortBy === 'updated_at_desc') {
+                    $query->orderBy('updated_at', 'desc');
+                } else {
+                    $query->latest();
+                }
+            }, function($query) {
+                $query->latest();
+            })
             ->paginate(15);
 
         $students = User::where('role', 'student')

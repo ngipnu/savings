@@ -52,6 +52,7 @@
                  <select wire:model.live="sortBy" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
                     <option value="created_at_desc">Terbaru</option>
                     <option value="created_at_asc">Terlama</option>
+                    <option value="updated_at_desc">Terakhir Diubah</option>
                     <option value="name_asc">Nama (A-Z)</option>
                     <option value="name_desc">Nama (Z-A)</option>
                     <option value="no_class">Belum Masuk Kelas (Prioritas)</option>

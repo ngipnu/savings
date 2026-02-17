@@ -154,6 +154,18 @@
                 <input wire:model.live="endDate" type="date" class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none text-sm">
             </div>
 
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1 ml-1">Urutan</label>
+                <select wire:model.live="sortBy" class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none text-sm">
+                    <option value="date_desc">Tanggal (Terbaru)</option>
+                    <option value="date_asc">Tanggal (Terlama)</option>
+                    <option value="created_at_desc">Input Terakhir</option>
+                    <option value="updated_at_desc">Terakhir Diupdate</option>
+                    <option value="amount_desc">Nominal (Terbesar)</option>
+                    <option value="amount_asc">Nominal (Terkecil)</option>
+                </select>
+            </div>
+
             <div class="flex items-end">
                 <button wire:click="resetFilters" class="w-full px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors text-sm font-semibold flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">

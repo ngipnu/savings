@@ -14,6 +14,10 @@ class DailyRecap extends Component
     public $classId;
     public $status = 'all'; // all, approved, pending
     public $classes;
+    
+    public $sortField = 'name'; // name, last_activity
+    public $sortDirection = 'asc';
+    public $dateDirection = 'asc';
 
     public function mount()
     {
@@ -31,6 +35,29 @@ class DailyRecap extends Component
         $this->classes = ClassRoom::all();
     }
 
+    public function sort($field)
+    {
+        if ($field === 'date') {
+            $this->dateDirection = $this->dateDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            if ($this->sortField === $field) {
+                $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                $this->sortField = $field;
+                $this->sortDirection = 'asc';
+            }
+        }
+    }
+
+    public function setSort($value)
+    {
+        $parts = explode('-', $value);
+        if (count($parts) === 2) {
+            $this->sortField = $parts[0];
+            $this->sortDirection = $parts[1];
+        }
+    }
+
     #[Computed]
     public function recapData()
     {
@@ -43,6 +70,10 @@ class DailyRecap extends Component
         while ($current <= $last) {
             $dates[] = $current->format('Y-m-d');
             $current->addDay();
+        }
+
+        if ($this->dateDirection === 'desc') {
+            $dates = array_reverse($dates);
         }
 
         $transactions = Transaction::with(['user.classRoom'])
@@ -66,6 +97,8 @@ class DailyRecap extends Component
             $students = $group->groupBy('user_id')->map(function($studentTransactions) use ($dates) {
                 $user = $studentTransactions->first()->user;
                 $dailyData = [];
+                $lastActivity = $studentTransactions->max('created_at');
+                
                 foreach ($dates as $date) {
                     $dayTrans = $studentTransactions->filter(function($t) use ($date) {
                         return $t->date->format('Y-m-d') === $date;
@@ -77,8 +110,20 @@ class DailyRecap extends Component
                     'name' => $user->name,
                     'student_id' => $user->student_id,
                     'history' => $dailyData,
+                    'last_activity' => $lastActivity,
                 ];
             });
+
+            // Sorting Students within Class
+            if ($this->sortField === 'name') {
+                $students = $this->sortDirection === 'asc' 
+                    ? $students->sortBy('name', SORT_NATURAL|SORT_FLAG_CASE) 
+                    : $students->sortByDesc('name', SORT_NATURAL|SORT_FLAG_CASE);
+            } elseif ($this->sortField === 'last_activity') {
+                $students = $this->sortDirection === 'asc' 
+                    ? $students->sortBy('last_activity') 
+                    : $students->sortByDesc('last_activity');
+            }
 
             return [
                 'name' => $className,
@@ -86,6 +131,10 @@ class DailyRecap extends Component
                 'dates' => $dates
             ];
         });
+
+        // Optional: Sort Classes by Name if needed, currently implicit by groupBy string key sort order? 
+        // groupBy returns keys in order of appearance usually. Let's explicit sort classes by name.
+        $grouped = $grouped->sortKeys(SORT_NATURAL|SORT_FLAG_CASE);
 
         return [
             'dates' => $dates,

@@ -84,6 +84,8 @@ class StudentManagement extends Component
                     $query->orderBy('name', 'desc');
                 } elseif ($this->sortBy === 'created_at_asc') {
                     $query->orderBy('created_at', 'asc');
+                } elseif ($this->sortBy === 'updated_at_desc') {
+                    $query->orderBy('updated_at', 'desc');
                 } else {
                     // Default: created_at desc (newest first)
                     $query->orderBy('created_at', 'desc');
