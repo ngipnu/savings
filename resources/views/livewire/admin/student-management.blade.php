@@ -279,6 +279,17 @@
         <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 md:p-8 relative">
             <h2 class="text-2xl font-bold text-[#1e3a29] mb-6">Import Data Siswa dari Excel</h2>
 
+            @if (session()->has('error'))
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-start gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mt-0.5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+                <div class="text-sm font-medium">
+                    {{ session('error') }}
+                </div>
+            </div>
+            @endif
+
             <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <div class="flex justify-between items-start mb-2">
                     <h4 class="font-bold text-blue-900">Format Excel yang Diperlukan:</h4>
