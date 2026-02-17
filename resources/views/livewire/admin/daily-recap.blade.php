@@ -66,31 +66,31 @@
             <table class="w-full border-collapse border border-slate-200 table-fixed min-w-[1000px]">
                 <thead class="sticky top-0 z-20 bg-white">
                     <tr class="bg-slate-100 text-slate-600 text-[10px] uppercase font-bold tracking-wider">
-                        <th class="px-6 py-4 text-left border border-slate-200 w-64 shadow-sm" rowspan="2">Nama Siswa / Tanggal</th>
-                        <th class="px-4 py-3 text-center border border-slate-200" colspan="{{ count($recap['dates']) }}">Mutasi Harian (Rp)</th>
+                        <th class="px-6 py-2 text-left border border-slate-200 w-64 shadow-sm" rowspan="2">Nama Siswa / Tanggal</th>
+                        <th class="px-4 py-1.5 text-center border border-slate-200" colspan="{{ count($recap['dates']) }}">Mutasi Harian (Rp)</th>
                     </tr>
                     <tr class="bg-slate-50 text-slate-500 text-[10px] uppercase font-bold tracking-wider text-center">
                         @foreach($recap['dates'] as $date)
-                            <th class="px-2 py-3 border border-slate-200">{{ \Carbon\Carbon::parse($date)->format('d/m/y') }}</th>
+                            <th class="px-2 py-1.5 border border-slate-200">{{ \Carbon\Carbon::parse($date)->format('d/m/y') }}</th>
                         @endforeach
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($recap['classes'] as $classGroup)
                         <tr class="bg-slate-100 pointer-events-none sticky z-10">
-                            <td colspan="{{ count($recap['dates']) + 1 }}" class="px-6 py-2.5 font-black text-[#1e3a29] border border-slate-200 uppercase text-[11px] tracking-widest bg-emerald-50">
+                            <td colspan="{{ count($recap['dates']) + 1 }}" class="px-6 py-1.5 font-black text-[#1e3a29] border border-slate-200 uppercase text-[10px] tracking-widest bg-emerald-50/50">
                                 {{ $classGroup['name'] }}
                             </td>
                         </tr>
                         @foreach($classGroup['students'] as $student)
                             <tr class="hover:bg-slate-50 transition-all border border-slate-200">
-                                <td class="px-6 py-3 text-slate-700 sticky left-0 bg-white border border-slate-200 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">
-                                    <div class="font-bold text-sm truncate">{{ $student['name'] }}</div>
-                                    <div class="text-[10px] text-slate-400 tracking-wider uppercase">{{ $student['student_id'] }}</div>
+                                <td class="px-6 py-1.5 text-slate-700 sticky left-0 bg-white border border-slate-200 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">
+                                    <div class="font-bold text-[13px] truncate">{{ $student['name'] }}</div>
+                                    <div class="text-[9px] text-slate-400 tracking-wider uppercase leading-none">{{ $student['student_id'] }}</div>
                                 </td>
                                 @foreach($recap['dates'] as $date)
                                     @php $val = $student['history'][$date] ?? 0; @endphp
-                                    <td class="px-2 py-3 text-center border border-slate-200 text-sm {{ $val > 0 ? 'text-emerald-600 font-bold' : ($val < 0 ? 'text-rose-600 font-bold' : 'text-slate-300') }}">
+                                    <td class="px-2 py-1 text-center border border-slate-200 text-[13px] {{ $val > 0 ? 'text-emerald-600 font-bold' : ($val < 0 ? 'text-rose-600 font-bold' : 'text-slate-300') }}">
                                         @if($val != 0)
                                             {{ $val > 0 ? number_format($val, 0, ',', '.') : '(' . number_format(abs($val), 0, ',', '.') . ')' }}
                                         @else
@@ -111,7 +111,7 @@
                 @if(count($recap['classes']) > 0)
                 <tfoot class="sticky bottom-0 bg-white font-bold border-t-2 border-slate-300">
                     <tr class="bg-slate-100">
-                        <td class="px-6 py-4 text-slate-800 text-sm font-black border border-slate-200">TOTAL SELURUH</td>
+                        <td class="px-6 py-2 text-slate-800 text-xs font-black border border-slate-200">TOTAL SELURUH</td>
                         @foreach($recap['dates'] as $date)
                             @php 
                                 $colTotal = 0;
@@ -121,7 +121,7 @@
                                     }
                                 }
                             @endphp
-                            <td class="px-2 py-4 text-center border border-slate-200 text-sm {{ $colTotal > 0 ? 'text-emerald-700' : ($colTotal < 0 ? 'text-rose-700' : 'text-slate-400') }}">
+                            <td class="px-2 py-2 text-center border border-slate-200 text-xs {{ $colTotal > 0 ? 'text-emerald-700' : ($colTotal < 0 ? 'text-rose-700' : 'text-slate-400') }}">
                                 {{ $colTotal != 0 ? ($colTotal > 0 ? number_format($colTotal, 0, ',', '.') : '(' . number_format(abs($colTotal), 0, ',', '.') . ')') : '-' }}
                             </td>
                         @endforeach
