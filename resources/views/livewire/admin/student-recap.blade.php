@@ -11,6 +11,10 @@
                 </svg>
                 <span class="hidden md:inline">Kembali</span>
             </a>
+            <button wire:click="openModal" class="px-4 py-3 md:px-6 bg-lime-500 text-white rounded-xl font-semibold hover:bg-lime-600 transition-all shadow-lg shadow-lime-900/20 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                <span class="hidden md:inline">Transaksi Baru</span>
+            </button>
             <a href="{{ route('admin.student.print-account', $student->id) }}" target="_blank" class="px-4 py-3 md:px-6 bg-[#1e3a29] text-white rounded-xl font-semibold hover:bg-[#2a4d38] transition-all shadow-lg shadow-emerald-900/20 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
@@ -19,6 +23,19 @@
             </a>
         </div>
     </div>
+
+    <!-- Floating Notifications / Flash Messages -->
+    @if (session()->has('message'))
+        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl shadow-sm flex items-start gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 mt-0.5 text-emerald-500">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            <div>
+                <p class="font-bold text-sm text-emerald-900">Berhasil!</p>
+                <p class="text-sm opacity-90">{{ session('message') }}</p>
+            </div>
+        </div>
+    @endif
 
     <!-- Student Info Card -->
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mb-6">
@@ -153,4 +170,82 @@
         </div>
         @endif
     </div>
+
+    <!-- Modal Tambah Transaksi -->
+    @if($showModal)
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 md:p-8 my-8 relative">
+            <h2 class="text-2xl font-bold text-[#1e3a29] mb-6">Tambah Transaksi Siswa</h2>
+
+            <form wire:submit="saveTransaction" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Siswa</label>
+                        <input type="text" disabled value="{{ $student->name }}" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-slate-100 text-slate-500 outline-none font-bold">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Produk Tabungan</label>
+                        <select wire:model="saving_type_id" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+                            <option value="">Pilih Produk</option>
+                            @foreach($savingTypes as $type)
+                                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('saving_type_id') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Tipe Transaksi</label>
+                        <select wire:model="type" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+                            <option value="">Pilih Tipe</option>
+                            <option value="deposit">Setoran</option>
+                            <option value="withdrawal">Penarikan</option>
+                        </select>
+                        @error('type') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Jumlah (Rp)</label>
+                        <input wire:model="amount" type="number" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none" placeholder="50000">
+                        @error('amount') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Tanggal</label>
+                        <input wire:model="date" type="date" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+                        @error('date') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    @if(!in_array(auth()->user()->role, ['operator', 'wali_kelas']))
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Status</label>
+                        <select wire:model="status" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none">
+                            <option value="pending">Pending</option>
+                            <option value="approved">Disetujui</option>
+                            <option value="rejected">Ditolak</option>
+                        </select>
+                        @error('status') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                    @endif
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Keterangan</label>
+                    <textarea wire:model="description" rows="3" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none" placeholder="Keterangan transaksi"></textarea>
+                    @error('description') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="button" wire:click="closeModal" class="flex-1 px-4 py-2.5 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors font-medium">
+                        Batal
+                    </button>
+                    <button type="submit" class="flex-1 px-4 py-2.5 bg-[#1e3a29] text-white rounded-lg hover:bg-[#2a4d38] transition-colors font-medium">
+                        Simpan Transaksi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
 </div>

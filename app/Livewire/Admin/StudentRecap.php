@@ -16,6 +16,35 @@ class StudentRecap extends Component
     public $totalWithdrawal = 0;
     public $balance = 0;
 
+    // Transaction form properties
+    public $showModal = false;
+    public $saving_type_id;
+    public $type;
+    public $amount;
+    public $date;
+    public $description;
+    public $status = 'pending';
+
+    protected function rules()
+    {
+        return [
+            'saving_type_id' => 'required|exists:saving_types,id',
+            'type' => 'required|in:deposit,withdrawal',
+            'amount' => 'required|numeric|min:0',
+            'date' => 'required|date',
+            'description' => 'nullable|string',
+            'status' => 'required|in:pending,approved,rejected',
+        ];
+    }
+
+    protected $validationAttributes = [
+        'saving_type_id' => 'produk tabungan',
+        'type' => 'tipe',
+        'amount' => 'jumlah',
+        'date' => 'tanggal',
+        'status' => 'status',
+    ];
+
     public function mount($id)
     {
         $user = auth()->user();
@@ -47,6 +76,53 @@ class StudentRecap extends Component
         $this->balance = $this->totalDeposit - $this->totalWithdrawal;
     }
 
+    public function openModal()
+    {
+        $this->resetForm();
+        $this->showModal = true;
+    }
+
+    public function closeModal()
+    {
+        $this->showModal = false;
+        $this->resetForm();
+    }
+
+    public function resetForm()
+    {
+        $this->saving_type_id = null;
+        $this->type = '';
+        $this->amount = '';
+        $this->date = now()->format('Y-m-d');
+        $this->description = '';
+        $this->status = 'pending';
+        $this->resetErrorBag();
+    }
+
+    public function saveTransaction()
+    {
+        $this->validate();
+
+        if (in_array(auth()->user()->role, ['operator', 'wali_kelas'])) {
+            $this->status = 'pending';
+        }
+
+        \App\Models\Transaction::create([
+            'user_id' => $this->student->id,
+            'saving_type_id' => $this->saving_type_id,
+            'type' => $this->type,
+            'amount' => $this->amount,
+            'date' => $this->date,
+            'description' => $this->description,
+            'status' => $this->status,
+        ]);
+
+        session()->flash('message', 'Transaksi berhasil ditambahkan!');
+        
+        $this->calculateTotals();
+        $this->closeModal();
+    }
+
     public function render()
     {
         $transactions = \App\Models\Transaction::with('savingType', 'approver')
@@ -55,8 +131,11 @@ class StudentRecap extends Component
             ->orderBy('created_at', 'desc')
             ->paginate($this->perPage);
 
+        $savingTypes = \App\Models\SavingType::all();
+
         return view('livewire.admin.student-recap', [
-            'transactions' => $transactions
+            'transactions' => $transactions,
+            'savingTypes' => $savingTypes
         ])->layout('components.layouts.admin', ['title' => 'Rekap Tabungan - ' . $this->student->name]);
     }
 }
