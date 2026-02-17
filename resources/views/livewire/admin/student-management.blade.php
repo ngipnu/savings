@@ -290,6 +290,45 @@
             </div>
             @endif
 
+            @if(!empty($importFailures))
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+                <div class="flex items-center gap-2 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    <h3 class="font-bold text-red-800">Detail Kesalahan Import</h3>
+                </div>
+                
+                <div class="max-h-60 overflow-y-auto pr-2">
+                    <table class="w-full text-sm text-left text-red-700">
+                        <thead class="text-xs text-red-800 uppercase bg-red-100 sticky top-0">
+                            <tr>
+                                <th class="px-3 py-2 rounded-tl-lg">Baris</th>
+                                <th class="px-3 py-2">Kolom</th>
+                                <th class="px-3 py-2 rounded-tr-lg">Pesan Error</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-red-200">
+                            @foreach($importFailures as $failure)
+                            <tr class="hover:bg-red-100/50 transition-colors">
+                                <td class="px-3 py-2 font-mono font-bold">{{ $failure['row'] }}</td>
+                                <td class="px-3 py-2 font-medium">{{ $failure['attribute'] }}</td>
+                                <td class="px-3 py-2">
+                                    @foreach($failure['errors'] as $error)
+                                        <div class="flex items-center gap-1">
+                                            <span>•</span>
+                                            <span>{{ $error }}</span>
+                                        </div>
+                                    @endforeach
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @endif
+
             <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <div class="flex justify-between items-start mb-2">
                     <h4 class="font-bold text-blue-900">Format Excel yang Diperlukan:</h4>

@@ -37,6 +37,7 @@ class StudentManagement extends Component
     public $showBulkAssignModal = false;
     public $sortBy = 'created_at_desc';
     public $perPage = 10;
+    public $importFailures = [];
 
     protected function rules()
     {
@@ -121,12 +122,14 @@ class StudentManagement extends Component
     {
         $this->showImportModal = true;
         $this->import_file = null;
+        $this->importFailures = [];
     }
 
     public function closeImportModal()
     {
         $this->showImportModal = false;
         $this->import_file = null;
+        $this->importFailures = [];
     }
 
     public function openBulkAssignModal()
@@ -258,10 +261,28 @@ class StudentManagement extends Component
             'import_file' => 'required|mimes:xlsx,xls,csv|max:2048',
         ]);
 
+        $this->importFailures = [];
+
         try {
             Excel::import(new StudentsImport, $this->import_file->getRealPath());
             session()->flash('message', 'Data siswa berhasil diimport!');
             $this->closeImportModal();
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+             $failures = $e->failures();
+             foreach ($failures as $failure) {
+                 $this->importFailures[] = [
+                     'row' => $failure->row(),
+                     'attribute' => $failure->attribute(),
+                     'errors' => $failure->errors(),
+                     'values' => $failure->values(),
+                 ];
+             }
+             // sort failures by row
+             usort($this->importFailures, function ($a, $b) {
+                 return $a['row'] <=> $b['row'];
+             });
+             
+             session()->flash('error', 'Gagal import data: Terdapat ' . count($this->importFailures) . ' baris yang bermasalah.');
         } catch (\Exception $e) {
             session()->flash('error', 'Gagal import data: ' . $e->getMessage());
         }
