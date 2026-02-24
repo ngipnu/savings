@@ -127,7 +127,7 @@
             }
 
             @page {
-                size: landscape;
+                size: auto;
                 margin: 1cm;
             }
         }

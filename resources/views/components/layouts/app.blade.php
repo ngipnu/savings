@@ -81,7 +81,7 @@
                 max-width: none !important;
             }
             @page {
-                size: landscape;
+                size: auto;
                 margin: 1cm;
             }
         }
