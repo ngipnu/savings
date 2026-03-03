@@ -1,4 +1,18 @@
 <div class="space-y-6">
+    @if (session()->has('message'))
+        <div x-data="{ show: true }" x-show="show" class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-6 py-4 rounded-xl flex items-center justify-between mb-6 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-emerald-100 rounded-lg">
+                    <svg class="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                </div>
+                <span class="font-medium">{{ session('message') }}</span>
+            </div>
+            <button @click="show = false" class="text-emerald-400 hover:text-emerald-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+    @endif
+
     <div class="mb-8 flex justify-between items-center">
         <div>
             <h1 class="text-3xl font-bold text-[#1e3a29] tracking-tight">Neraca Mutasi Harian</h1>
@@ -107,7 +121,9 @@
                                 </td>
                                 @foreach($recap['dates'] as $date)
                                     @php $val = $student['history'][$date] ?? 0; @endphp
-                                    <td class="px-2 py-1 text-center border border-slate-200 text-[13px] {{ $val > 0 ? 'text-emerald-600 font-bold' : ($val < 0 ? 'text-rose-600 font-bold' : 'text-slate-300') }}">
+                                    <td wire:click="openInputModal({{ $student['id'] }}, '{{ addslashes($student['name']) }}', '{{ $date }}')" 
+                                        class="px-2 py-1 text-center border border-slate-200 text-[13px] cursor-pointer hover:bg-lime-50 transition-colors {{ $val > 0 ? 'text-emerald-600 font-bold' : ($val < 0 ? 'text-rose-600 font-bold' : 'text-slate-300') }}"
+                                        title="Kembali ke input transaksi">
                                         @if($val != 0)
                                             {{ $val > 0 ? number_format($val, 0, ',', '.') : '(' . number_format(abs($val), 0, ',', '.') . ')' }}
                                         @else
@@ -148,4 +164,71 @@
             </table>
         </div>
     </div>
+
+    <!-- Input Modal -->
+    @if($showInputModal)
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 print:hidden">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-[#1e3a29]">Input Transaksi</h3>
+                <button wire:click="closeInputModal" class="text-slate-400 hover:text-slate-600">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <form wire:submit="saveTransaction" class="p-6 space-y-4">
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-sm mb-4">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-slate-500">Siswa:</span>
+                        <span class="font-bold text-slate-800">{{ $inputUserName }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Tanggal:</span>
+                        <span class="font-bold text-slate-800">{{ \Carbon\Carbon::parse($inputDate)->format('d F Y') }}</span>
+                    </div>
+                </div>
+
+                @if(!empty($savingTypes))
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Produk Tabungan</label>
+                    <select wire:model="savingTypeId" class="w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-lime-400 outline-none text-sm bg-slate-50">
+                        @foreach($savingTypes as $type)
+                            <option value="{{ $type['id'] ?? $type->id }}">{{ $type['name'] ?? $type->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('savingTypeId') <span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                </div>
+                @endif
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Jenis Transaksi</label>
+                    <select wire:model="inputType" class="w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-lime-400 outline-none text-sm bg-slate-50">
+                        <option value="deposit">Setoran</option>
+                        <option value="withdrawal">Penarikan</option>
+                    </select>
+                    @error('inputType') <span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Jumlah (Rp)</label>
+                    <input type="number" wire:model="inputAmount" class="w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-lime-400 outline-none text-sm bg-slate-50" placeholder="Contoh: 50000" min="1">
+                    @error('inputAmount') <span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Keterangan (Opsional)</label>
+                    <textarea wire:model="inputDescription" class="w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-lime-400 outline-none text-sm bg-slate-50" rows="2" placeholder="Tulis keterangan jika ada..."></textarea>
+                    @error('inputDescription') <span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="pt-2 flex gap-3">
+                    <button type="button" wire:click="closeInputModal" class="flex-1 px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-colors text-sm">Batal</button>
+                    <button type="submit" class="flex-1 flex justify-center items-center px-4 py-2 bg-[#1e3a29] text-white rounded-xl font-bold hover:bg-[#2a4d38] transition-colors text-sm shadow-lg shadow-emerald-900/20 relative">
+                        <span>Simpan</span>
+                        <div wire:loading wire:target="saveTransaction" class="absolute right-4 w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
 </div>

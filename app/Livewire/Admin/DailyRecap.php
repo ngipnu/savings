@@ -15,6 +15,17 @@ class DailyRecap extends Component
     public $status = 'all'; // all, approved, pending
     public $classes;
     
+    // Modal properties
+    public $showInputModal = false;
+    public $inputUserId;
+    public $inputUserName;
+    public $inputDate;
+    public $inputAmount;
+    public $inputType = 'deposit';
+    public $inputDescription;
+    public $savingTypeId;
+    public $savingTypes = [];
+    
     public $sortField = 'name'; // name, last_activity
     public $sortDirection = 'asc';
     public $dateDirection = 'asc';
@@ -33,6 +44,10 @@ class DailyRecap extends Component
         $this->startDate = now()->subDays(6)->format('Y-m-d');
         $this->endDate = now()->format('Y-m-d');
         $this->classes = ClassRoom::all();
+        $this->savingTypes = \App\Models\SavingType::all();
+        if ($this->savingTypes->isNotEmpty()) {
+            $this->savingTypeId = $this->savingTypes->first()->id;
+        }
     }
 
     public function sort($field)
@@ -56,6 +71,57 @@ class DailyRecap extends Component
             $this->sortField = $parts[0];
             $this->sortDirection = $parts[1];
         }
+    }
+
+    public function openInputModal($userId, $userName, $date)
+    {
+        $this->inputUserId = $userId;
+        $this->inputUserName = $userName;
+        $this->inputDate = $date;
+        $this->inputAmount = '';
+        $this->inputType = 'deposit';
+        $this->inputDescription = '';
+        $this->savingTypeId = $this->savingTypes->first()->id ?? null;
+        $this->showInputModal = true;
+    }
+
+    public function closeInputModal()
+    {
+        $this->showInputModal = false;
+        $this->resetErrorBag();
+        $this->reset(['inputUserId', 'inputUserName', 'inputDate', 'inputAmount', 'inputType', 'inputDescription']);
+    }
+
+    public function saveTransaction()
+    {
+        $this->validate([
+            'inputUserId' => 'required|exists:users,id',
+            'savingTypeId' => 'required|exists:saving_types,id',
+            'inputType' => 'required|in:deposit,withdrawal',
+            'inputAmount' => 'required|numeric|min:1',
+            'inputDate' => 'required|date',
+            'inputDescription' => 'nullable|string'
+        ], [
+            'inputAmount.required' => 'Jumlah wajib diisi',
+            'inputAmount.numeric' => 'Jumlah harus berupa angka',
+            'inputAmount.min' => 'Jumlah minimal 1',
+            'savingTypeId.required' => 'Produk tabungan wajib dipilih'
+        ]);
+
+        $status = in_array(auth()->user()->role, ['operator', 'wali_kelas']) ? 'pending' : 'approved';
+
+        Transaction::create([
+            'user_id' => $this->inputUserId,
+            'saving_type_id' => $this->savingTypeId,
+            'type' => $this->inputType,
+            'amount' => $this->inputAmount,
+            'date' => $this->inputDate,
+            'description' => $this->inputDescription,
+            'status' => $status,
+        ]);
+
+        $this->closeInputModal();
+        session()->flash('message', 'Transaksi berhasil ditambahkan pada tanggal ' . \Carbon\Carbon::parse($this->inputDate)->format('d M Y') . '!');
     }
 
     #[Computed]
@@ -107,6 +173,7 @@ class DailyRecap extends Component
                     $dailyData[$date] = $mutation;
                 }
                 return [
+                    'id' => $user->id,
                     'name' => $user->name,
                     'student_id' => $user->student_id,
                     'history' => $dailyData,
