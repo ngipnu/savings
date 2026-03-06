@@ -142,27 +142,27 @@ class DailyRecap extends Component
             $dates = array_reverse($dates);
         }
 
-        $transactions = Transaction::with(['user.classRoom'])
-            ->whereBetween('date', [$start, $end])
-            ->when($this->status !== 'all', function($query) {
-                $query->where('status', $this->status);
-            })
-            ->when($this->status === 'all', function($query) {
-                $query->whereIn('status', ['approved', 'pending']);
-            })
-            ->when($this->classId, function($query) {
-                $query->whereHas('user', function($q) {
-                    $q->where('class_room_id', $this->classId);
-                });
-            })
-            ->get();
+        $users = \App\Models\User::with(['classRoom', 'transactions' => function ($query) use ($start, $end) {
+            $query->whereBetween('date', [$start, $end])
+                  ->when($this->status !== 'all', function($q) {
+                      $q->where('status', $this->status);
+                  })
+                  ->when($this->status === 'all', function($q) {
+                      $q->whereIn('status', ['approved', 'pending']);
+                  });
+        }])
+        ->where('role', 'student')
+        ->when($this->classId, function($query) {
+            $query->where('class_room_id', $this->classId);
+        })
+        ->get();
 
-        $grouped = $transactions->groupBy(function($t) {
-            return $t->user->classRoom ? $t->user->classRoom->name : 'Tanpa Kelas';
+        $grouped = $users->groupBy(function($user) {
+            return $user->classRoom ? $user->classRoom->name : 'Tanpa Kelas';
         })->map(function($group, $className) use ($dates) {
-            $students = $group->groupBy('user_id')->map(function($studentTransactions) use ($dates) {
-                $user = $studentTransactions->first()->user;
+            $students = $group->map(function($user) use ($dates) {
                 $dailyData = [];
+                $studentTransactions = $user->transactions;
                 $lastActivity = $studentTransactions->max('created_at');
                 
                 foreach ($dates as $date) {
@@ -194,7 +194,7 @@ class DailyRecap extends Component
 
             return [
                 'name' => $className,
-                'students' => $students,
+                'students' => $students->values(),
                 'dates' => $dates
             ];
         });
